@@ -1,0 +1,3 @@
+# Browserpack
+
+Browser based bundling

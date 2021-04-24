@@ -1,0 +1,44 @@
+{
+  "name": "browserpack",
+  "version": "0.0.1",
+  "description": "Browser based bundler",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development rollup --watch --config rollup.config.js",
+    "build": "rollup --config rollup.config.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ameerthehacker/browserpack.git"
+  },
+  "keywords": [
+    "browser",
+    "bundler",
+    "npm"
+  ],
+  "author": "Ameer Jhan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ameerthehacker/browserpack/issues"
+  },
+  "homepage": "https://github.com/ameerthehacker/browserpack#readme",
+  "dependencies": {
+    "@types/node": "^14.14.41",
+    "rollup-plugin-cleaner": "^1.0.0",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^18.0.0",
+    "@rollup/plugin-node-resolve": "^11.2.1",
+    "@rollup/plugin-typescript": "^8.2.1",
+    "@types/jest": "^26.0.22",
+    "cross-env": "^7.0.3",
+    "ejs": "^3.1.6",
+    "jest": "^26.6.3",
+    "rollup": "^2.45.2",
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-ts-paths": "^1.0.5",
+    "ts-jest": "^26.5.5",
+    "tslib": "^2.2.0"
+  }
+}
