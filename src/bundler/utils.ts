@@ -1,5 +1,5 @@
 import { Asset, Files } from "./types";
-import babelParser from '@babel/parser';
+import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';
 
@@ -8,7 +8,9 @@ export async function createAsset(filePath: string, importer: string, files: Fil
   const dependencies: string[] = [];
 
   if (file) {
-    const ast = babelParser.parse(file.content);
+    const ast = babelParser.parse(file.content, {
+      sourceType: "module"
+    });
 
     babelTraverse(ast, {
       ImportDeclaration: (importDeclaration) => {

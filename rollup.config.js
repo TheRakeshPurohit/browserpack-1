@@ -6,6 +6,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import cleaner from 'rollup-plugin-cleaner';
 import htmlPlugin from './lib/html-plugin';
 import webWorkerPlugin from './lib/web-worker-plugin';
+import jsonPlugin from '@rollup/plugin-json';
+import builtinsPlugin from 'rollup-plugin-node-builtins';
+import nodeGlobalsPlugin from 'rollup-plugin-node-globals';
 
 const outputDir = 'dist';
 const extensions = [
@@ -13,11 +16,16 @@ const extensions = [
 ];
 
 const plugins = [
-  resolve({ extensions }),
-  commonjs(),
+  resolve({ extensions, preferBuiltins: true, browser: true }),
+  commonjs({
+    include: ["node_modules/**"]
+  }),
+  builtinsPlugin(),
+  nodeGlobalsPlugin(),
   typescript(),
   tsConfigPaths(),
   htmlPlugin(),
+  jsonPlugin(),
   cleaner({
     targets: [
       outputDir
@@ -43,6 +51,11 @@ const rollupConfig = {
     sourcemap: true,
     format: 'cjs',
     dir: outputDir
+  },
+  onwarn: function (message) {
+    if (message.code === 'CIRCULAR_DEPENDENCY') return;
+    
+    console.error(message);
   },
   plugins
 }
