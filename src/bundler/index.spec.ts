@@ -1,12 +1,28 @@
 import Bundler from './';
 
 describe('Sample test', () => {
-  const one: number = 1;
-  const bundler = new Bundler();
+  const bundler = new Bundler({
+    files: {
+      '/index.js': {
+        content: `
+          import {hello} from './hello.js;
 
-  it('should pass', () => {
-    bundler.run();
+          hello()
+        `
+      },
+      '/hello.js': {
+        content: `
+          export function hello() {
+            console.log('hello world from browserpack');
+          }
+        `
+      }
+    }
+  });
+
+  it('should generate the right dependencies', async () => {
+    const depGraph = await bundler.bundle();
     
-    expect(one).toBe(1);
+    expect(depGraph['/index.js'].dependencies).toEqual(['./hello.js']);
   });
 });

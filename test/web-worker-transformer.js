@@ -7,7 +7,7 @@ module.exports = {
     const transpiledCode = tsJestTransformer.process(src, `${filename}.ts`, config && config.globals);
     
     const code = `
-      export default function() {
+      module.exports = function() {
         const webWorker = new Worker(URL.createObjectURL(new Blob([\`${transpiledCode}\`])));
 
         return webWorker;
