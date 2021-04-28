@@ -28,7 +28,7 @@ export default class Browserpack {
         } else if (evt.data.type === 'ERR') {
           throw evt.data.payload.err;
         }
-      }
+      };
 
       this.bundlerWorker.addEventListener('message', workerListener);
 

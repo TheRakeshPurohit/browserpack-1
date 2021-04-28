@@ -1,8 +1,11 @@
-import { DepGraph, Files } from "./types";
-import { createAsset } from "./utils";
+import { DepGraph, Files } from './types';
+import { createAsset } from './utils';
 import path from 'path';
 
-export function generateDepGraph(files: Files, entryPoint: string = '/index.js') {
+export function generateDepGraph(
+  files: Files,
+  entryPoint: string = '/index.js'
+) {
   let importer = entryPoint;
   const queue = [importer];
   const depGraph: DepGraph = {};
@@ -17,7 +20,9 @@ export function generateDepGraph(files: Files, entryPoint: string = '/index.js')
     importer = filePath;
 
     // get the absolute path of the dependency
-    const dependencies = asset.dependencies.map(dependency => path.resolve(path.dirname(filePath), dependency));
+    const dependencies = asset.dependencies.map((dependency) =>
+      path.resolve(path.dirname(filePath), dependency)
+    );
 
     queue.push(...dependencies);
   }

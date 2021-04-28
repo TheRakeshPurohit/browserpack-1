@@ -1,15 +1,15 @@
-import { BundlerWorkerMessage } from "./types";
+import { BundlerWorkerMessage } from './types';
 import { generateDepGraph } from './dep-graph';
 
 function sendMesssage(message: BundlerWorkerMessage) {
   self.postMessage(message);
 }
 
-self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) =>  {
+self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) => {
   switch (evt.data.type) {
     case 'BUILD_DEP_GRAPH': {
       const { files, entryPoint } = evt.data.payload;
-      
+
       try {
         const depGraph = generateDepGraph(files, entryPoint);
 
@@ -18,7 +18,7 @@ self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) =>  {
           payload: {
             depGraph
           }
-        });  
+        });
       } catch (err) {
         sendMesssage({
           type: 'ERR',
@@ -31,4 +31,4 @@ self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) =>  {
       break;
     }
   }
-}
+};

@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function () {
   let noop = () => null;
   let self = {
     onmessage: noop
@@ -14,7 +14,7 @@ module.exports = function() {
     for (const listner of messageListeners) {
       listner(evt);
     }
-  }
+  };
 
   //worker-code
 
@@ -32,21 +32,23 @@ module.exports = function() {
         break;
       }
       default: {
-        throw new Error(`${event} not handled in jest web worker transformer`)
+        throw new Error(`${event} not handled in jest web worker transformer`);
       }
     }
-  }
+  };
 
   this.removeEventListener = (event, listener) => {
     switch (event) {
       case 'message': {
-        messageListeners = messageListeners.filter(messageListener => messageListener !== listener);
+        messageListeners = messageListeners.filter(
+          (messageListener) => messageListener !== listener
+        );
 
         break;
       }
       default: {
-        throw new Error(`${event} not handled in jest web worker transformer`)
+        throw new Error(`${event} not handled in jest web worker transformer`);
       }
     }
-  }
-}
+  };
+};

@@ -22,7 +22,7 @@ describe('Sample test', () => {
 
   it('should generate the right dependencies', async () => {
     const depGraph = await bundler.bundle();
-    
+
     expect(depGraph['/index.js'].dependencies).toEqual(['./hello.js']);
   });
 });
