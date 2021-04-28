@@ -1,6 +1,6 @@
 import { DepGraph, Files } from "./types";
 import { createAsset } from "./utils";
-import path from 'path';
+import path from 'path-browserify';
 
 export function generateDepGraph(files: Files, entryPoint: string = '/index.js') {
   let importer = entryPoint;
