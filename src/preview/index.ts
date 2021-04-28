@@ -6,17 +6,19 @@ const bundler = new Bundler({
       content: `
         import {hello} from './hello.js';
 
-        hello();
+        hello('Ameer');
       `
     },
     '/hello.js': {
       content: `
-        export function hello() {
-          console.log('hello world from browserpack');
+        export function hello(message) {
+          document.write(\`Hello world from \${message}\`);
         }
       `
     }
   }
 });
 
-bundler.bundle().then(console.log);
+bundler.bundle().then(() => {
+  bundler.run();
+});
