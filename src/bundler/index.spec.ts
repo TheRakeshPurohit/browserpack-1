@@ -5,7 +5,7 @@ describe('Sample test', () => {
     files: {
       '/index.js': {
         content: `
-          import {hello} from './hello.js;
+          import {hello} from './hello.js';
 
           hello()
         `

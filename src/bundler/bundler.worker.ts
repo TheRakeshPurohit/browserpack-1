@@ -5,18 +5,28 @@ function sendMesssage(message: BundlerWorkerMessage) {
   self.postMessage(message);
 }
 
-self.onmessage = async (evt: MessageEvent<BundlerWorkerMessage>) =>  {
+self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) =>  {
   switch (evt.data.type) {
     case 'BUILD_DEP_GRAPH': {
       const { files, entryPoint } = evt.data.payload;
-      const depGraph = await generateDepGraph(files, entryPoint);
+      
+      try {
+        const depGraph = generateDepGraph(files, entryPoint);
 
-      sendMesssage({
-        type: 'DEP_GRAPH_READY',
-        payload: {
-          depGraph
-        }
-      });
+        sendMesssage({
+          type: 'DEP_GRAPH_READY',
+          payload: {
+            depGraph
+          }
+        });  
+      } catch (err) {
+        sendMesssage({
+          type: 'ERR',
+          payload: {
+            err
+          }
+        });
+      }
 
       break;
     }

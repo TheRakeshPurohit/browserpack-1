@@ -25,6 +25,8 @@ export default class Browserpack {
           this.bundlerWorker.removeEventListener('message', workerListener);
 
           resolve(evt.data.payload.depGraph);
+        } else if (evt.data.type === 'ERR') {
+          throw evt.data.payload.err;
         }
       }
 

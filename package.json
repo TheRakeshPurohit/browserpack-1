@@ -28,6 +28,7 @@
     "@babel/standalone": "^7.13.17",
     "@babel/traverse": "^7.13.17",
     "@types/node": "^14.14.41",
+    "path-browserify": "^1.0.1",
     "rollup-plugin-cleaner": "^1.0.0",
     "typescript": "^4.2.4"
   },

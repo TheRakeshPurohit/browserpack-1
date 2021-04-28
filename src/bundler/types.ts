@@ -20,4 +20,9 @@ export type BundlerWorkerMessage = {
   payload: {
     depGraph: DepGraph;
   }
+} | {
+  type: 'ERR',
+  payload: {
+    err: Error
+  }
 };

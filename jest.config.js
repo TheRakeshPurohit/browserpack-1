@@ -4,7 +4,7 @@ const jestConfig = {
     "^web-worker:(.+)$": "<rootDir>/src/bundler/$1"
   },
   transform: {
-    "^(.*)worker(.*)$": "<rootDir>/test/web-worker-transformer.js"
+    "^.+\\.worker.[t|j]sx?$": "<rootDir>/test/web-worker-transformer.js"
   },
   setupFiles: [
     "<rootDir>/test/setup.ts"

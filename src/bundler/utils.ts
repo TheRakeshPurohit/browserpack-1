@@ -3,7 +3,7 @@ import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';
 
-export async function createAsset(filePath: string, importer: string, files: Files): Promise<Asset> {
+export function createAsset(filePath: string, importer: string, files: Files): Asset {
   const file = files[filePath];
   const dependencies: string[] = [];
 
@@ -18,19 +18,14 @@ export async function createAsset(filePath: string, importer: string, files: Fil
       }
     });
 
+    const code = Babel.transform(file.content, {
+      sourceType: "module"
+    }).code;
 
-    return new Promise((resolve, reject) => {
-      Babel.transformFromAst(ast, "", {}, (err, transformResult) => {
-        if (!err) {
-          resolve({
-            code: transformResult?.code,
-            dependencies
-          })
-        } else {
-          reject(err);
-        }
-      })
-    })
+    return {
+      code,
+      dependencies
+    }
   } else {
     throw new Error(`Cannot find module '${filePath}' from '${importer}'`);
   }
