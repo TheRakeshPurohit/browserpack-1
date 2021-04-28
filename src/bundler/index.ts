@@ -1,4 +1,4 @@
-import BundlerWorker from 'web-worker:./bundler.worker';
+import BundlerWorker from 'worker-loader!./bundler.worker';
 import { BundlerWorkerMessage, DepGraph, Files } from './types';
 
 export interface BrowserPackConfig {
