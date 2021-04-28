@@ -1,4 +1,6 @@
 const path = require('path');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -8,6 +10,13 @@ module.exports = {
   performance: {
     maxAssetSize: 5e+6,
   },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 3000,
+    writeToDisk: true
+  },
+  devtool: isDev && 'source-map',
   module: {
     rules: [
       {
@@ -29,6 +38,13 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
+    filename: isDev? "[name].js": "[name].[contenthash].js",
     clean: true
   },
+  plugins: [
+    new NodePolyfillPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'Browserpack preview'
+    })
+  ]
 };
