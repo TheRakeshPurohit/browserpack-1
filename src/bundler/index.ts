@@ -1,5 +1,7 @@
 import BundlerWorker from 'worker-loader!./bundler.worker';
+import { resolveFile } from './resolver';
 import { BundlerWorkerMessage, DepGraph, Files } from './types';
+import path from 'path';
 
 export interface BrowserPackConfig {
   files: Files;
@@ -8,10 +10,13 @@ export interface BrowserPackConfig {
 
 export default class Browserpack {
   private bundlerWorker: Worker;
+  private depGraph: DepGraph;
+  private moduleCache: Record<string, object>;
 
   constructor(private config: BrowserPackConfig) {
-    this.config.entryPoint = this.config.entryPoint || '/index.js';
     this.bundlerWorker = new BundlerWorker();
+    this.depGraph = {};
+    this.moduleCache = {};
   }
 
   private sendBundlerWorkerMessage(message: BundlerWorkerMessage) {
@@ -24,7 +29,9 @@ export default class Browserpack {
         if (evt.data.type === 'DEP_GRAPH_READY') {
           this.bundlerWorker.removeEventListener('message', workerListener);
 
-          resolve(evt.data.payload.depGraph);
+          this.depGraph = evt.data.payload.depGraph;
+
+          resolve(this.depGraph);
         } else if (evt.data.type === 'ERR') {
           throw evt.data.payload.err;
         }
@@ -42,7 +49,40 @@ export default class Browserpack {
     });
   }
 
+  private runCode(filePath: string) {
+    if (this.moduleCache[filePath]) {
+      return this.moduleCache[filePath];
+    }
+
+    const asset = this.depGraph[filePath];
+    // require used inside transpiled code
+    const process = {
+      env: {
+        NODE_ENV: 'development'
+      }
+    };
+    const require = (relativePath: string) => {
+      const absolutePath = path.join(path.dirname(filePath), relativePath);
+
+      return this.runCode(
+        resolveFile(this.config.files, absolutePath) as string
+      );
+    };
+    const exports = {};
+    const module = {
+      exports
+    };
+
+    if (asset.code) {
+      eval(asset.code);
+    }
+
+    this.moduleCache[filePath] = module.exports;
+
+    return module.exports;
+  }
+
   run() {
-    console.log('running bundler...');
+    this.runCode(this.config.entryPoint || '/index.js');
   }
 }

@@ -2,16 +2,18 @@ import { Asset, Files } from './types';
 import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';
+import { resolveFile } from './resolver';
 
 export function createAsset(
   filePath: string,
   importer: string,
   files: Files
 ): Asset {
-  const file = files[filePath];
+  const resolvedFilePath = resolveFile(files, filePath);
   const dependencies: string[] = [];
 
-  if (file) {
+  if (resolvedFilePath) {
+    const file = files[resolvedFilePath];
     const ast = babelParser.parse(file.content, {
       sourceType: 'module'
     });
@@ -23,7 +25,7 @@ export function createAsset(
     });
 
     const code = Babel.transform(file.content, {
-      sourceType: 'module'
+      presets: ['env']
     }).code;
 
     return {
@@ -33,4 +35,12 @@ export function createAsset(
   } else {
     throw new Error(`Cannot find module '${filePath}' from '${importer}'`);
   }
+}
+
+export function getFileExtension(filename: string) {
+  const filenameParts = filename.split('.');
+
+  if (filenameParts.length === 1) return null;
+
+  return filenameParts[filenameParts.length - 1];
 }

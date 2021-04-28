@@ -1,6 +1,7 @@
 import { DepGraph, Files } from './types';
 import { createAsset } from './utils';
 import path from 'path';
+import { resolveFile } from './resolver';
 
 export function generateDepGraph(
   files: Files,
@@ -15,8 +16,9 @@ export function generateDepGraph(
     if (depGraph[filePath]) continue;
 
     const asset = createAsset(filePath, importer, files);
+    const resolvedFilePath = resolveFile(files, filePath) as string;
 
-    depGraph[filePath] = asset;
+    depGraph[resolvedFilePath] = asset;
     importer = filePath;
 
     // get the absolute path of the dependency
