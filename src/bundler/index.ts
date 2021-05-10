@@ -70,7 +70,7 @@ export default class Browserpack {
       exports
     };
 
-    if (['js'].includes(fileExtension)) {
+    if (['js', 'json'].includes(fileExtension)) {
       if (this.moduleCache[filePath]) {
         return this.moduleCache[filePath];
       }
@@ -84,7 +84,7 @@ export default class Browserpack {
       this.moduleCache[filePath] = module.exports;
 
       return module.exports;
-    } else if (['css'].includes(fileExtension)) {
+    } else if (fileExtension === 'css') {
       if (this.moduleCache[filePath]) return;
 
       const asset = this.depGraph[filePath];

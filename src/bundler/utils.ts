@@ -38,9 +38,18 @@ export function createAsset(
         code,
         dependencies
       };
-    } else if (['css'].includes(resolvedFileExtension)) {
+    } else if (resolvedFileExtension === 'css') {
       return {
         code: file.content,
+        dependencies: []
+      };
+    } else if (resolvedFileExtension === 'json') {
+      const transformedCode = `
+        module.exports = ${file.content};
+      `;
+
+      return {
+        code: transformedCode,
         dependencies: []
       };
     } else {

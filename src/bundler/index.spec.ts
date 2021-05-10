@@ -1,10 +1,6 @@
 import Bundler from './';
 
 describe('Sample test', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should generate the right dependencies', async () => {
     const bundler = new Bundler({
       files: {
@@ -53,8 +49,6 @@ describe('Sample test', () => {
   });
 
   it('should run the files', async () => {
-    console.info = jest.fn();
-
     const files = {
       '/index.js': {
         content: `
@@ -66,7 +60,7 @@ describe('Sample test', () => {
       '/hello/index.js': {
         content: `
           export function hello(message = 'from browserpack') {
-            console.info(\`Hello world \${message}\`);
+            document.body.innerHTML = \`Hello world \${message}\`;
           }
       `
       }
@@ -76,7 +70,7 @@ describe('Sample test', () => {
     await bundler.bundle();
     bundler.run();
 
-    expect(console.info).toHaveBeenCalledWith('Hello world Ameer');
+    expect(document.body.innerHTML).toEqual('Hello world Ameer');
   });
 
   it('should support css files', async () => {
@@ -105,5 +99,32 @@ describe('Sample test', () => {
     const styleTag = document.head.getElementsByTagName('style')[0];
 
     expect(styleTag.innerText).toEqual(indexCSS);
+  });
+
+  it('should support json files', async () => {
+    const json = `
+      {
+        "name": "Ameer",
+        "city": "Bangalore"
+      }
+    `;
+    const files = {
+      '/person.json': {
+        content: json
+      },
+      '/index.js': {
+        content: `
+          import {name, city} from './person.json';
+
+          document.body.innerHTML = 'Welcome ' + name +  ' from ' + city;
+      `
+      }
+    };
+    const bundler = new Bundler({ files });
+
+    await bundler.bundle();
+    bundler.run();
+
+    expect(document.body.innerHTML).toEqual('Welcome Ameer from Bangalore');
   });
 });
