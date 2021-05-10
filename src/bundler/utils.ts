@@ -44,6 +44,15 @@ export function createAsset(
         dependencies: []
       };
     } else if (resolvedFileExtension === 'json') {
+      // check the validity of the json
+      try {
+        JSON.parse(file.content);
+      } catch {
+        throw new Error(
+          `Invalid json module '${filePath}' imported from '${importer}'`
+        );
+      }
+
       const transformedCode = `
         module.exports = ${file.content};
       `;

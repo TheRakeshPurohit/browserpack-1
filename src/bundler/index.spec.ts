@@ -1,6 +1,10 @@
 import Bundler from './';
 
 describe('Sample test', () => {
+  beforeEach(() => {
+    expect.hasAssertions();
+  });
+
   it('should generate the right dependencies', async () => {
     const bundler = new Bundler({
       files: {
@@ -126,5 +130,37 @@ describe('Sample test', () => {
     bundler.run();
 
     expect(document.body.innerHTML).toEqual('Welcome Ameer from Bangalore');
+  });
+
+  it('should throw for invalid json file import', async () => {
+    const json = `
+      {
+        "name": "Ameer",
+        "city": "Bangalor
+      }
+    `;
+    const files = {
+      '/person.json': {
+        content: json
+      },
+      '/index.js': {
+        content: `
+          import {name, city} from './person.json';
+
+          document.body.innerHTML = 'Welcome ' + name +  ' from ' + city;
+      `
+      }
+    };
+    const bundler = new Bundler({ files });
+
+    try {
+      await bundler.bundle();
+    } catch (err) {
+      expect(err).toEqual(
+        new Error(
+          `Invalid json module '/person.json' imported from '/index.js'`
+        )
+      );
+    }
   });
 });
