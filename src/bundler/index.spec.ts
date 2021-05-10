@@ -78,4 +78,32 @@ describe('Sample test', () => {
 
     expect(console.info).toHaveBeenCalledWith('Hello world Ameer');
   });
+
+  it('should support css files', async () => {
+    const indexCSS = `
+      h1 {
+        color: red;
+      }
+    `;
+    const files = {
+      '/index.css': {
+        content: indexCSS
+      },
+      '/index.js': {
+        content: `
+          import './index.css';
+
+          document.body.innerHTML = '<h1>Hello World!</h1>';
+      `
+      }
+    };
+    const bundler = new Bundler({ files });
+
+    await bundler.bundle();
+    bundler.run();
+
+    const styleTag = document.head.getElementsByTagName('style')[0];
+
+    expect(styleTag.innerText).toEqual(indexCSS);
+  });
 });

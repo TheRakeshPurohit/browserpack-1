@@ -90,7 +90,7 @@ export default class Browserpack {
       const asset = this.depGraph[filePath];
       const styleTag = document.createElement('style');
 
-      styleTag.innerHTML = asset.code || '';
+      styleTag.innerText = asset.code || '';
       document.head.append(styleTag);
 
       return {};
