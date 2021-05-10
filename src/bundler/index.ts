@@ -2,6 +2,7 @@ import BundlerWorker from 'worker-loader!./bundler.worker';
 import { resolveFile } from './resolver';
 import { BundlerWorkerMessage, DepGraph, Files } from './types';
 import path from 'path';
+import { getFileExtension } from './utils';
 
 export interface BrowserPackConfig {
   files: Files;
@@ -50,11 +51,7 @@ export default class Browserpack {
   }
 
   private runCode(filePath: string) {
-    if (this.moduleCache[filePath]) {
-      return this.moduleCache[filePath];
-    }
-
-    const asset = this.depGraph[filePath];
+    const fileExtension = getFileExtension(path.basename(filePath));
     // require used inside transpiled code
     const process = {
       env: {
@@ -73,13 +70,31 @@ export default class Browserpack {
       exports
     };
 
-    if (asset.code) {
-      eval(asset.code);
+    if (['js'].includes(fileExtension)) {
+      if (this.moduleCache[filePath]) {
+        return this.moduleCache[filePath];
+      }
+
+      const asset = this.depGraph[filePath];
+
+      if (asset.code) {
+        eval(asset.code);
+      }
+
+      this.moduleCache[filePath] = module.exports;
+
+      return module.exports;
+    } else if (['css'].includes(fileExtension)) {
+      if (this.moduleCache[filePath]) return;
+
+      const asset = this.depGraph[filePath];
+      const styleTag = document.createElement('style');
+
+      styleTag.innerHTML = asset.code || '';
+      document.head.append(styleTag);
+
+      return {};
     }
-
-    this.moduleCache[filePath] = module.exports;
-
-    return module.exports;
   }
 
   run() {

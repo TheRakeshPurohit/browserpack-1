@@ -12,7 +12,7 @@
     "paths": {
       "@bundler": ["./bundler/index.ts"]
     },
-    "lib": ["WebWorker"],
+    "lib": ["WebWorker", "DOM"],
     "typeRoots": ["./node_modules/@types", "./typings"]
   }
 }

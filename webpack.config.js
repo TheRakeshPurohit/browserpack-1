@@ -3,6 +3,12 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
+const htmlTemplatePath = path.resolve(
+  __dirname,
+  'src',
+  'preview',
+  'index.html'
+);
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -44,7 +50,7 @@ module.exports = {
   plugins: [
     new NodePolyfillPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Browserpack preview'
+      template: htmlTemplatePath
     })
   ]
 };

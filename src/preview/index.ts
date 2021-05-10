@@ -2,9 +2,17 @@ import Bundler from '@bundler';
 
 const bundler = new Bundler({
   files: {
+    '/index.css': {
+      content: `
+        h1 {
+          color: red;
+        }
+      `
+    },
     '/index.js': {
       content: `
         import {hello} from './hello.js';
+        import './index.css';
 
         hello('Ameer');
       `
@@ -12,7 +20,7 @@ const bundler = new Bundler({
     '/hello.js': {
       content: `
         export function hello(message) {
-          document.write(\`Hello world from \${message}\`);
+          document.getElementById('root').innerHTML = \`<h1>Hello world from \${message}!</h1>\`;
         }
       `
     }
