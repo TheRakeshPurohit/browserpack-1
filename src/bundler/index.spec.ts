@@ -102,7 +102,7 @@ describe('Sample test', () => {
 
     const styleTag = document.head.getElementsByTagName('style')[0];
 
-    expect(styleTag.innerText).toEqual(indexCSS);
+    expect(styleTag.innerHTML).toEqual(indexCSS);
   });
 
   it('should support json files', async () => {

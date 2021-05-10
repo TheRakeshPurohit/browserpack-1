@@ -90,10 +90,13 @@ export default class Browserpack {
       const asset = this.depGraph[filePath];
       const styleTag = document.createElement('style');
 
-      styleTag.innerText = asset.code || '';
+      styleTag.innerHTML = asset.code || '';
       document.head.append(styleTag);
 
-      return {};
+      module.exports = styleTag;
+      this.moduleCache[filePath] = module.exports;
+
+      return module.exports;
     }
   }
 
