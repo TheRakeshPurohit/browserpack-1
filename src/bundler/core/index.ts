@@ -169,6 +169,7 @@ export default class Browserpack {
 
   async update(files: Files) {
     this.config.files = { ...this.config.files, ...files };
+
     const prevDepGraph = this.depGraph;
     const filesToInvalidate = [];
 
@@ -176,7 +177,7 @@ export default class Browserpack {
       filesToInvalidate.push(file, ...this.findDependents(file));
     }
 
-    // now we will transpile and run only affected files and files tgha
+    // now we will transpile and run only affected files and files that depend on the updated files
     await this.bundle([...filesToInvalidate]);
 
     const removedFiles = this.findRemovedFiles(prevDepGraph);
