@@ -1,20 +1,20 @@
 class ModuleCache {
-  constructor(private assetCache: Record<string, object> = {}) {}
+  constructor(private moduleCache: Record<string, object> = {}) {}
 
   public get(key: string) {
-    return this.assetCache[key];
+    return this.moduleCache[key];
   }
 
   public set(key: string, module: object) {
-    this.assetCache[key] = module;
+    this.moduleCache[key] = module;
   }
 
   public reset() {
-    this.assetCache = {};
+    this.moduleCache = {};
   }
 
   public remove(key: string) {
-    delete this.assetCache[key];
+    delete this.moduleCache[key];
   }
 }
 

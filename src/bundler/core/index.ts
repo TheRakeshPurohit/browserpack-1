@@ -18,17 +18,49 @@ export default class Browserpack {
   constructor(private config: BrowserPackConfig) {
     this.bundlerWorker = new BundlerWorker();
     this.depGraph = {};
+
+    moduleCache.reset();
+    assetCache.reset();
   }
 
   private sendBundlerWorkerMessage(message: BundlerWorkerMessage) {
     this.bundlerWorker.postMessage(message);
   }
 
-  private findAffectedFiles(filePath: string) {}
+  private findDependents(filePath: string) {
+    const dependents: string[] = [];
+    const queue = [filePath];
+
+    for (const elem of queue) {
+      for (const assetPath in this.depGraph) {
+        for (const dependency of this.depGraph[assetPath].dependencies) {
+          const dependencyAbsolutePath = path.resolve(
+            path.dirname(assetPath),
+            dependency
+          );
+          const resolvedFilePath = resolveFile(
+            this.config.files,
+            dependencyAbsolutePath
+          );
+
+          if (resolvedFilePath === elem) {
+            const dependent = resolveFile(
+              this.config.files,
+              assetPath
+            ) as string;
+
+            dependents.push(dependent);
+            // now we need fnd dependents of the dependent :)
+            queue.push(dependent);
+          }
+        }
+      }
+    }
+
+    return dependents;
+  }
 
   bundle(): Promise<DepGraph> {
-    assetCache.reset();
-
     return new Promise((resolve) => {
       const workerListener = (evt: MessageEvent<BundlerWorkerMessage>) => {
         if (evt.data.type === 'DEP_GRAPH_READY') {
@@ -104,17 +136,26 @@ export default class Browserpack {
   }
 
   run() {
-    moduleCache.reset();
-
     this.runCode(this.config.entryPoint || '/index.js');
   }
 
   async update(files: Files) {
     this.config.files = { ...this.config.files, ...files };
-    moduleCache.reset();
 
+    for (const file in files) {
+      const dependents = this.findDependents(file);
+      // remove the file cache and it's dependents cache
+      assetCache.remove(file);
+      moduleCache.remove(file);
+
+      for (const dependent of dependents) {
+        assetCache.remove(dependent);
+        moduleCache.remove(dependent);
+      }
+    }
+
+    // now we will transpile and run only affected files and files tgha
     await this.bundle();
-
     this.run();
   }
 }

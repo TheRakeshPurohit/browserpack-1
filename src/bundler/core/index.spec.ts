@@ -200,4 +200,50 @@ describe('Bundler', () => {
 
     expect(document.body.innerHTML).toEqual('Hello world edited Ameer');
   });
+
+  it('should update the files and rerun for deep dependencies', async () => {
+    const files = {
+      '/index.js': {
+        content: `
+          import {hello} from './hello';
+          
+          hello('Ameer');
+      `
+      },
+      '/hello/index.js': {
+        content: `
+          import {say} from '../lib';
+
+          export function hello(message = 'from browserpack') {
+            say(\`Hello world \${message}\`);
+          }
+      `
+      },
+      '/lib/index.js': {
+        content: `
+          export function say(message) {
+            document.body.innerHTML = message;
+          }
+        `
+      }
+    };
+    const bundler = new Bundler({ files });
+
+    await bundler.bundle();
+    bundler.run();
+
+    expect(document.body.innerHTML).toEqual('Hello world Ameer');
+
+    await bundler.update({
+      '/lib/index.js': {
+        content: `
+          export function say(message) {
+            document.body.innerHTML = 'edited lib';
+          }
+        `
+      }
+    });
+
+    expect(document.body.innerHTML).toEqual('edited lib');
+  });
 });
