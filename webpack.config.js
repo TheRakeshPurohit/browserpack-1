@@ -3,16 +3,11 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
-const htmlTemplatePath = path.resolve(
-  __dirname,
-  'src',
-  'preview',
-  'index.html'
-);
+const htmlTemplatePath = path.resolve(__dirname, 'preview', 'index.html');
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
-  entry: './src/preview/index.ts',
+  entry: './preview/index.ts',
   performance: {
     maxAssetSize: 5e6
   },
@@ -39,7 +34,7 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
-      '@bundler': path.resolve(__dirname, 'src/bundler/index.ts')
+      '@bundler': path.resolve(__dirname, 'bundler/index.ts')
     }
   },
   output: {
