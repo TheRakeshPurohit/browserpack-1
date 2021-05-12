@@ -1,4 +1,4 @@
-import Bundler from '@bundler';
+import Bundler from 'bundler/core';
 
 const bundler = new Bundler({
   files: {

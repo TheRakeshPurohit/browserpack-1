@@ -1,4 +1,4 @@
-import { resolveFile } from './resolver';
+import { resolveFile } from './core/resolver';
 
 describe('utils', () => {
   describe('resolveDependency()', () => {

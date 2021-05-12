@@ -31,4 +31,18 @@ export type BundlerWorkerMessage =
       payload: {
         err: Error;
       };
+    }
+  | {
+      type: 'TRANSFORM';
+      payload: {
+        filePath: string;
+        code: string;
+      };
+    }
+  | {
+      type: 'TRANSFORM_READY';
+      payload: {
+        filePath: string;
+        transformedCode: string;
+      };
     };

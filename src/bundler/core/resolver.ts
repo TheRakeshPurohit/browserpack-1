@@ -1,5 +1,5 @@
-import { Files } from './types';
-import { getFileExtension } from './utils';
+import { Files } from '../types';
+import { getFileExtension } from '../utils';
 import path from 'path';
 
 const extensions = ['js', 'ts'];
@@ -26,7 +26,7 @@ export function resolveFile(files: Files, filePath: string) {
       }
     }
 
-    const packageJSONStr = (() => {
+    const packageJSONContent = (() => {
       const asset = files[`${filePath}/package.json`];
 
       if (!asset) return null;
@@ -34,9 +34,9 @@ export function resolveFile(files: Files, filePath: string) {
       return asset.content;
     })();
 
-    if (packageJSONStr) {
+    if (packageJSONContent) {
       try {
-        const packageJSON = JSON.parse(packageJSONStr);
+        const packageJSON = JSON.parse(packageJSONContent);
         const mainFile = packageJSON.main;
         const mainFilePath = path.join(filePath, mainFile);
 

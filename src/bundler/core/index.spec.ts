@@ -1,6 +1,6 @@
-import Bundler from './';
+import Bundler from '.';
 
-describe('Sample test', () => {
+describe('Bundler', () => {
   beforeEach(() => {
     expect.hasAssertions();
   });
@@ -162,5 +162,42 @@ describe('Sample test', () => {
         )
       );
     }
+  });
+
+  it('should update the files and rerun', async () => {
+    const files = {
+      '/index.js': {
+        content: `
+          import {hello} from './hello';
+          
+          hello('Ameer');
+      `
+      },
+      '/hello/index.js': {
+        content: `
+          export function hello(message = 'from browserpack') {
+            document.body.innerHTML = \`Hello world \${message}\`;
+          }
+      `
+      }
+    };
+    const bundler = new Bundler({ files });
+
+    await bundler.bundle();
+    bundler.run();
+
+    expect(document.body.innerHTML).toEqual('Hello world Ameer');
+
+    await bundler.update({
+      '/hello/index.js': {
+        content: `
+          export function hello(message = 'from browserpack') {
+            document.body.innerHTML = \`Hello world edited \${message}\`;
+          }
+        `
+      }
+    });
+
+    expect(document.body.innerHTML).toEqual('Hello world edited Ameer');
   });
 });
