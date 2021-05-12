@@ -85,7 +85,7 @@ export default class Browserpack {
         payload: {
           files: this.config.files,
           entryPoint: this.config.entryPoint,
-          invalidateFiles: invalidateFiles
+          invalidateFiles
         }
       });
     });
