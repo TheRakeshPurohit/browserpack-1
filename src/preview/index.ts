@@ -49,9 +49,14 @@ const bundler = new Bundler({
 
           hello(person.name);
         `
+      },
+      '/static/person.json': {
+        content: `
+          {
+            "name": "Ameer Jhan Edited"
+          }
+        `
       }
     });
-
-    console.log('done');
   }, 2000);
 })();

@@ -252,44 +252,4 @@ describe('Bundler', () => {
 
     expect(document.body.innerHTML).toEqual('edited lib');
   });
-
-  it('should remove css styles when they are not imported anymore', async () => {
-    const indexCSS = `
-      h1 {
-        color: red;
-      }
-    `;
-    const files = {
-      '/index.css': {
-        content: indexCSS
-      },
-      '/index.js': {
-        content: `
-          import './index.css';
-
-          document.body.innerHTML = '<h1>Hello World!</h1>';
-      `
-      }
-    };
-    const bundler = new Bundler({ files });
-
-    await bundler.bundle();
-    bundler.run();
-
-    const styleTag = document.head.getElementsByTagName('style')[0];
-
-    expect(styleTag.innerHTML).toEqual(indexCSS);
-
-    bundler.update({
-      '/index.js': {
-        content: `
-          document.body.innerHTML = '<h1>Hello World!</h1>';
-        `
-      }
-    });
-
-    expect(document.head.getElementsByTagName('style')[0].innerHTML).toEqual(
-      ''
-    );
-  });
 });

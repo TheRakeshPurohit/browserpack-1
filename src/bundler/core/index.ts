@@ -3,7 +3,6 @@ import { resolveFile } from './resolver';
 import { BundlerWorkerMessage, DepGraph, Files } from '../types';
 import path from 'path';
 import { getFileExtension } from '../utils';
-import assetCache from '../cache/asset-cache';
 import moduleCache from '../cache/module-cache';
 
 export interface BrowserPackConfig {
@@ -18,9 +17,6 @@ export default class Browserpack {
   constructor(private config: BrowserPackConfig) {
     this.bundlerWorker = new BundlerWorker();
     this.depGraph = {};
-
-    moduleCache.reset();
-    assetCache.reset();
   }
 
   private sendBundlerWorkerMessage(message: BundlerWorkerMessage) {
@@ -60,7 +56,15 @@ export default class Browserpack {
     return dependents;
   }
 
-  bundle(): Promise<DepGraph> {
+  bundle(invalidateFiles: string[] = []): Promise<DepGraph> {
+    if (invalidateFiles.length === 0) {
+      moduleCache.reset();
+    } else {
+      for (const file of invalidateFiles) {
+        moduleCache.remove(file);
+      }
+    }
+
     return new Promise((resolve) => {
       const workerListener = (evt: MessageEvent<BundlerWorkerMessage>) => {
         if (evt.data.type === 'DEP_GRAPH_READY') {
@@ -80,7 +84,8 @@ export default class Browserpack {
         type: 'BUILD_DEP_GRAPH',
         payload: {
           files: this.config.files,
-          entryPoint: this.config.entryPoint
+          entryPoint: this.config.entryPoint,
+          invalidateFiles: invalidateFiles
         }
       });
     });
@@ -156,28 +161,23 @@ export default class Browserpack {
     if (fileExtension === 'css') {
       const styleTag = moduleCache.get(filePath) as HTMLStyleElement;
 
-      styleTag.remove();
+      if (styleTag) {
+        styleTag.remove();
+      }
     }
   }
 
   async update(files: Files) {
     this.config.files = { ...this.config.files, ...files };
     const prevDepGraph = this.depGraph;
+    const filesToInvalidate = [];
 
     for (const file in files) {
-      const dependents = this.findDependents(file);
-      // remove the file cache and it's dependents cache
-      assetCache.remove(file);
-      moduleCache.remove(file);
-
-      for (const dependent of dependents) {
-        assetCache.remove(dependent);
-        moduleCache.remove(dependent);
-      }
+      filesToInvalidate.push(file, ...this.findDependents(file));
     }
 
     // now we will transpile and run only affected files and files tgha
-    await this.bundle();
+    await this.bundle([...filesToInvalidate]);
 
     const removedFiles = this.findRemovedFiles(prevDepGraph);
 

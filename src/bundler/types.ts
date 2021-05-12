@@ -18,6 +18,7 @@ export type BundlerWorkerMessage =
       payload: {
         files: Files;
         entryPoint?: string;
+        invalidateFiles: string[];
       };
     }
   | {

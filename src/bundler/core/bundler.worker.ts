@@ -3,6 +3,7 @@ import { generateDepGraph } from './dep-graph';
 import path from 'path';
 import { getFileExtension } from '../utils';
 import * as Babel from '@babel/standalone';
+import assetCache from '../cache/asset-cache';
 
 function sendMesssage(message: BundlerWorkerMessage) {
   self.postMessage(message);
@@ -11,9 +12,17 @@ function sendMesssage(message: BundlerWorkerMessage) {
 self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) => {
   switch (evt.data.type) {
     case 'BUILD_DEP_GRAPH': {
-      const { files, entryPoint } = evt.data.payload;
+      const { files, entryPoint, invalidateFiles } = evt.data.payload;
 
       try {
+        if (invalidateFiles.length === 0) {
+          assetCache.reset();
+        } else {
+          for (const file of invalidateFiles) {
+            assetCache.remove(file);
+          }
+        }
+
         const depGraph = generateDepGraph(files, entryPoint);
 
         sendMesssage({
