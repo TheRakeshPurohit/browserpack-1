@@ -1,4 +1,4 @@
-import Bundler from 'bundler/core';
+import Bundler from '@bundler';
 
 const bundler = new Bundler({
   files: {
@@ -35,6 +35,23 @@ const bundler = new Bundler({
   }
 });
 
-bundler.bundle().then(() => {
+(async () => {
+  await bundler.bundle();
+
   bundler.run();
-});
+
+  setTimeout(async () => {
+    await bundler.update({
+      '/index.js': {
+        content: `
+          import {hello} from './hello.js';
+          import person from './static/person.json';
+
+          hello(person.name);
+        `
+      }
+    });
+
+    console.log('done');
+  }, 2000);
+})();

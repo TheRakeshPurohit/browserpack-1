@@ -86,6 +86,16 @@ export default class Browserpack {
     });
   }
 
+  private findRemovedFiles(prevDepGraph: DepGraph) {
+    const removedFiles = [];
+
+    for (const file in prevDepGraph) {
+      if (!this.depGraph[file]) removedFiles.push(file);
+    }
+
+    return removedFiles;
+  }
+
   private runCode(filePath: string) {
     const fileExtension = getFileExtension(path.basename(filePath));
     const cachedModule = moduleCache.get(filePath);
@@ -125,6 +135,7 @@ export default class Browserpack {
       const asset = this.depGraph[filePath];
       const styleTag = document.createElement('style');
 
+      styleTag.setAttribute('id', filePath);
       styleTag.innerHTML = asset.code || '';
       document.head.append(styleTag);
 
@@ -139,8 +150,19 @@ export default class Browserpack {
     this.runCode(this.config.entryPoint || '/index.js');
   }
 
+  undoRun(filePath: string) {
+    const fileExtension = getFileExtension(path.basename(filePath));
+
+    if (fileExtension === 'css') {
+      const styleTag = moduleCache.get(filePath) as HTMLStyleElement;
+
+      styleTag.remove();
+    }
+  }
+
   async update(files: Files) {
     this.config.files = { ...this.config.files, ...files };
+    const prevDepGraph = this.depGraph;
 
     for (const file in files) {
       const dependents = this.findDependents(file);
@@ -156,6 +178,13 @@ export default class Browserpack {
 
     // now we will transpile and run only affected files and files tgha
     await this.bundle();
+
+    const removedFiles = this.findRemovedFiles(prevDepGraph);
+
+    for (const removedFile of removedFiles) {
+      this.undoRun(removedFile);
+    }
+
     this.run();
   }
 }

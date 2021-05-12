@@ -1,1 +1,3 @@
-export * from './core';
+import Browserpack from './core';
+
+export default Browserpack;
