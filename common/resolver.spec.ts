@@ -1,6 +1,7 @@
-import { resolveFile } from './core/resolver';
+import { Files } from './api';
+import { resolveFile } from './resolver';
 
-describe('bundler utils', () => {
+describe('resolver', () => {
   describe('resolveDependency()', () => {
     it('should check for absolute path', () => {
       const files = {
@@ -59,6 +60,30 @@ describe('bundler utils', () => {
       };
 
       expect(resolveFile(files, '/notfound.js')).toBeNull();
+    });
+
+    it('should resolve npm packages', () => {
+      const files: Files = {
+        '/node_modules/react/index.js': {
+          content: `module.exports = {}`
+        }
+      };
+
+      expect(resolveFile(files, 'react', '/hello.js')).toEqual(
+        '/node_modules/react/index.js'
+      );
+    });
+
+    it('should resolve npm packages', () => {
+      const files: Files = {
+        '/node_modules/react/node_modules/object-assign/index.js': {
+          content: `module.exports = {}`
+        }
+      };
+
+      expect(
+        resolveFile(files, 'object-assign', '/node_modules/react/index.js')
+      ).toEqual('/node_modules/react/node_modules/object-assign/index.js');
     });
   });
 });

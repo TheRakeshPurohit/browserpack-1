@@ -1,7 +1,7 @@
 import { DepGraph, Files } from '@common/api';
 import { createAsset } from '../utils';
 import path from 'path';
-import { resolveFile } from './resolver';
+import { resolveFile } from '../../common/resolver';
 import assetCache from '../cache/asset-cache';
 
 export function generateDepGraph(

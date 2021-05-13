@@ -1,5 +1,5 @@
 import BundlerWorker from 'worker-loader!./bundler.worker';
-import { resolveFile } from './resolver';
+import { resolveFile } from '../../common/resolver';
 import { BundlerWorkerMessage, DepGraph, Files } from '@common/api';
 import path from 'path';
 import { getFileExtension } from '@common/utils';
