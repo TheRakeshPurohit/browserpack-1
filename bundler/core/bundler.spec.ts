@@ -4,6 +4,15 @@ describe('Bundler', () => {
   beforeEach(() => {
     const styleTags = document.getElementsByTagName('style');
 
+    // root div tag for mounting react
+    if (!document.getElementById('root')) {
+      const rootElement = document.createElement('div');
+
+      rootElement.setAttribute('id', 'root');
+
+      document.body.appendChild(rootElement);
+    }
+
     // avoid css sideeffects of previous tests
     for (let i = 0; i < styleTags.length; i++) {
       styleTags[i].remove();
@@ -255,8 +264,8 @@ describe('Bundler', () => {
   it('should support npm packages', async () => {
     const packageJSON = {
       dependencies: {
-        react: '^17.0.1',
-        'react-dom': '^17.0.1'
+        react: '^17.0.2',
+        'react-dom': '^17.0.2'
       }
     };
     const files = {

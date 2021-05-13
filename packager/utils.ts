@@ -1,6 +1,10 @@
 import babelTraverse from '@babel/traverse';
 import * as BabelParser from '@babel/parser';
-import { findRootPathOfPackage, isExternalDep } from '@common/utils';
+import {
+  findRootPathOfPackage,
+  getPackageNameFromPath,
+  isExternalDep
+} from '@common/utils';
 import { Asset, Files } from '@common/api';
 import { getPackageFiles } from './npm';
 import semver from 'semver';
@@ -40,15 +44,7 @@ export async function createAsset(
 
   for (const dependency of dependencies) {
     if (isExternalDep(dependency)) {
-      const packageName = (() => {
-        const depNameParts = dependency.split('/');
-
-        if (depNameParts[0].startsWith('@')) {
-          return `${depNameParts[0]}/${depNameParts[1]}`;
-        } else {
-          return depNameParts[0];
-        }
-      })();
+      const packageName = getPackageNameFromPath(dependency);
 
       if (
         !files[`${packageRootPath}/node_modules/${packageName}/package.json`]

@@ -78,6 +78,11 @@ describe('resolver', () => {
       const files: Files = {
         '/node_modules/react/node_modules/object-assign/index.js': {
           content: `module.exports = {}`
+        },
+        '/node_modules/react/package.json': {
+          content: `{
+            "dependencies": { "object-assign": "latest" }
+          }`
         }
       };
 

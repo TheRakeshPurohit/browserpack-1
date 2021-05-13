@@ -52,3 +52,13 @@ export function findRootPathOfPackage(filePath: string) {
 
   return filePathParts.slice(0, i + 2).join('/');
 }
+
+export function getPackageNameFromPath(filePath: string) {
+  const fileParts = filePath.split('/');
+
+  if (fileParts[0].startsWith('@')) {
+    return `${fileParts[0]}/${fileParts[1]}`;
+  } else {
+    return fileParts[0];
+  }
+}

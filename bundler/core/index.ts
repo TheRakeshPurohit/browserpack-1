@@ -4,6 +4,7 @@ import { BundlerWorkerMessage, DepGraph, Files } from '@common/api';
 import path from 'path';
 import { getFileExtension } from '@common/utils';
 import moduleCache from '../cache/module-cache';
+import packageCache from '../cache/package-cache';
 
 export interface BrowserPackConfig {
   files: Files;
@@ -56,7 +57,59 @@ export default class Browserpack {
     return dependents;
   }
 
-  bundle(invalidateFiles: string[] = []): Promise<DepGraph> {
+  private async installPackage(
+    packageName: string,
+    version: string
+  ): Promise<DepGraph> {
+    const packagerResponse = await fetch(
+      `${process.env.PACKAGER_URL}/pack/${packageName}/${version}`
+    );
+
+    if (packagerResponse.ok) {
+      return (await packagerResponse.json()).assets;
+    } else {
+      throw new Error(`Failed to install package ${packageName}@${version}`);
+    }
+  }
+
+  private async installPackages() {
+    const packageJSONContent =
+      this.config.files['/package.json']?.content || '{}';
+
+    try {
+      const packageJSON = JSON.parse(packageJSONContent);
+      const dependencies = packageJSON.dependencies || {};
+
+      for (const packageName in dependencies) {
+        const packageVersion = dependencies[packageName];
+        const cacheKey = `${packageName}:${packageVersion}`;
+        let cachedPackage = packageCache.get(cacheKey);
+
+        if (!cachedPackage) {
+          cachedPackage = await this.installPackage(
+            packageName,
+            packageVersion
+          );
+
+          packageCache.set(cacheKey, cachedPackage);
+        }
+
+        if (cachedPackage) {
+          this.depGraph = { ...this.depGraph, ...cachedPackage };
+        }
+
+        for (const filePath in cachedPackage) {
+          this.config.files[filePath] = {
+            content: cachedPackage[filePath].code || ''
+          };
+        }
+      }
+    } catch {
+      throw new Error(`Invalid json file at /package.json`);
+    }
+  }
+
+  private async generateDepGraph(invalidateFiles: string[] = []) {
     if (invalidateFiles.length === 0) {
       moduleCache.reset();
     } else {
@@ -91,6 +144,13 @@ export default class Browserpack {
     });
   }
 
+  async bundle(invalidateFiles: string[] = []): Promise<DepGraph> {
+    await this.generateDepGraph(invalidateFiles);
+    await this.installPackages();
+
+    return this.depGraph;
+  }
+
   private findRemovedFiles(prevDepGraph: DepGraph) {
     const removedFiles = [];
 
@@ -111,9 +171,19 @@ export default class Browserpack {
       }
     };
     const require = (relativePath: string) => {
-      return this.runCode(
-        resolveFile(this.config.files, relativePath, filePath) as string
+      const resolvedFilePath = resolveFile(
+        this.config.files,
+        relativePath,
+        filePath
       );
+
+      if (!resolvedFilePath) {
+        throw new Error(
+          `Cannot find module '${relativePath}' from '${filePath}'`
+        );
+      }
+
+      return this.runCode(resolvedFilePath);
     };
     const exports = {};
     const module = {
