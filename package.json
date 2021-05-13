@@ -4,7 +4,7 @@
   "description": "Browser based bundler",
   "scripts": {
     "dev-bundler": "cross-env NODE_ENV=development webpack serve --progress",
-    "dev-packager": "cross-env NODE_ENV=development nodemon --exec ts-node --project tsconfig.packager.json --require tsconfig-paths/register --files packager/app.ts",
+    "dev-packager": "cross-env NODE_ENV=development nodemon --watch packager -e ts,js,json --exec ts-node --project tsconfig.packager.json --require tsconfig-paths/register --files packager/app.ts",
     "start-packager": "cross-env NODE_ENV=production ts-node --project tsconfig.packager.json --require tsconfig-paths/register --files packager/app.ts",
     "build-bundler": "webpack --progress",
     "build-bundler-dev": "cross-env NODE_ENV=development webpack --progress",

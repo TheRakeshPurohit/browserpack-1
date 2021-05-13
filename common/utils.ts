@@ -52,11 +52,3 @@ export function findRootPathOfPackage(filePath: string) {
 
   return filePathParts.slice(0, i + 2).join('/');
 }
-
-export function getExactPackageVersion(version: string) {
-  if (version.startsWith('^') || version.startsWith('~')) {
-    return version.substring(1);
-  } else {
-    return version;
-  }
-}

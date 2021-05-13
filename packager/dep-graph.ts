@@ -30,18 +30,19 @@ export async function generateDepGraph(
 
     // add package.json to also dependency graph to help resolution
     const packageRootPath = findRootPathOfPackage(filePath);
-    const npmPackagePackageJSONPath = `${packageRootPath}/package.json`;
+    const packageJSONPath = `${packageRootPath}/package.json`;
 
-    if (!depGraph[npmPackagePackageJSONPath]) {
-      depGraph[npmPackagePackageJSONPath] = {
-        code: files[npmPackagePackageJSONPath].content || '{}',
+    if (!depGraph[packageJSONPath]) {
+      depGraph[packageJSONPath] = {
+        code: files[packageJSONPath].content || '{}',
         dependencies: []
       };
     }
 
-    const dependencies = asset.dependencies.map(
-      (dependency) => resolveFile(files, filePath, dependency) as string
-    );
+    // if we are not able to resolve a file, then may be it is a peer dependency so we ignore it
+    const dependencies = asset.dependencies
+      .map((dependency) => resolveFile(files, dependency, filePath) as string)
+      .filter(Boolean);
 
     queue.push(...dependencies);
   }

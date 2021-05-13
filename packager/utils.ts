@@ -67,7 +67,7 @@ export async function createAsset(
           const packageFiles = await getPackageFiles(
             packageName,
             packageSemVer.version,
-            packageRootPath
+            `${packageRootPath}/node_modules`
           );
 
           for (const packageFile in packageFiles) {

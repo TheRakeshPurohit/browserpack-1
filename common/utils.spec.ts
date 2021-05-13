@@ -1,6 +1,5 @@
 import {
   findRootPathOfPackage,
-  getExactPackageVersion,
   getFileExtension,
   isExternalDep
 } from './utils';
