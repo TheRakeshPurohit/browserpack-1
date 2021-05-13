@@ -1,8 +1,8 @@
 import BundlerWorker from 'worker-loader!./bundler.worker';
 import { resolveFile } from './resolver';
-import { BundlerWorkerMessage, DepGraph, Files } from '@common/types';
+import { BundlerWorkerMessage, DepGraph, Files } from '@common/api';
 import path from 'path';
-import { getFileExtension } from '../utils';
+import { getFileExtension } from '@common/utils';
 import moduleCache from '../cache/module-cache';
 
 export interface BrowserPackConfig {

@@ -1,6 +1,6 @@
 import { resolveFile } from './core/resolver';
 
-describe('utils', () => {
+describe('bundler utils', () => {
   describe('resolveDependency()', () => {
     it('should check for absolute path', () => {
       const files = {

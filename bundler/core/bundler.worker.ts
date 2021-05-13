@@ -1,7 +1,7 @@
-import { BundlerWorkerMessage } from '@common/types';
+import { BundlerWorkerMessage } from '@common/api';
 import { generateDepGraph } from './dep-graph';
 import path from 'path';
-import { getFileExtension } from '../utils';
+import { getFileExtension } from '@common/utils';
 import * as Babel from '@babel/standalone';
 import assetCache from '../cache/asset-cache';
 

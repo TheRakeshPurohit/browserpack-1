@@ -1,5 +1,5 @@
-import { Files } from '@common/types';
-import { getFileExtension } from '../utils';
+import { Files } from '@common/api';
+import { getFileExtension } from '@common/utils';
 import path from 'path';
 
 const extensions = ['js', 'ts'];

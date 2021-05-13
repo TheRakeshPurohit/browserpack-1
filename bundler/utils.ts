@@ -1,8 +1,9 @@
-import { Asset, Files } from '@common/types';
+import { Asset, Files } from '@common/api';
 import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';
 import path from 'path';
+import { getFileExtension } from '@common/utils';
 
 export function createAsset(
   filePath: string,
@@ -58,12 +59,4 @@ export function createAsset(
   } else {
     return null;
   }
-}
-
-export function getFileExtension(filename: string) {
-  const filenameParts = filename.split('.');
-
-  if (filenameParts.length === 1) return '';
-
-  return filenameParts[filenameParts.length - 1];
 }
