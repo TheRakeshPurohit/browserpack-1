@@ -1,5 +1,6 @@
 import {
   findRootPathOfPackage,
+  getExactPackageVersion,
   getFileExtension,
   isExternalDep
 } from './utils';
@@ -34,6 +35,12 @@ describe('common utils', () => {
       expect(
         findRootPathOfPackage('/node_modules/react/dist/index.js')
       ).toEqual('/node_modules/react');
+    });
+
+    it('should find the root path of scoped package', () => {
+      expect(
+        findRootPathOfPackage('/node_modules/@chakra-ui/core/dist/index.js')
+      ).toEqual('/node_modules/@chakra-ui/core');
     });
 
     it('should return / when it is a direact dependency', () => {
