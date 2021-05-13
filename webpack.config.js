@@ -7,8 +7,6 @@ const webpack = require('webpack');
 const isDev = process.env.NODE_ENV === 'development';
 const htmlTemplatePath = path.resolve(__dirname, 'preview', 'index.html');
 
-console.log(dotenv.parsed);
-
 module.exports = {
   mode: isDev ? 'development' : 'production',
   entry: './preview/index.ts',

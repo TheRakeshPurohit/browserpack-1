@@ -1,10 +1,17 @@
 import Bundler from '@bundler';
 
+const packageJSON = {
+  dependencies: {
+    react: '^17.0.2',
+    'react-dom': '^17.0.2'
+  }
+};
+
 const bundler = new Bundler({
   files: {
     '/index.css': {
       content: `
-        h1 {
+        p {
           color: red;
         }
       `
@@ -18,19 +25,29 @@ const bundler = new Bundler({
     },
     '/index.js': {
       content: `
-        import {hello} from './hello.js';
         import person from './static/person.json';
-        import './index.css';
+        import React, {useState} from 'react';
+        import ReactDOM from 'react-dom';
 
-        hello(person.name);
+        function Counter() {
+          const [count, setCount] = useState(0);
+        
+          return (
+            <div>
+              <p>Welcome {person.name}!</p>
+              <p>You clicked {count} times</p>
+              <button onClick={() => setCount(count + 1)}>
+                Click me
+              </button>
+            </div>
+          );
+        }
+
+        ReactDOM.render(<Counter />, document.getElementById('root'));
       `
     },
-    '/hello.js': {
-      content: `
-        export function hello(message) {
-          document.getElementById('root').innerHTML = \`<h1>Hello world from \${message}!</h1>\`;
-        }
-      `
+    '/package.json': {
+      content: JSON.stringify(packageJSON)
     }
   }
 });
@@ -44,10 +61,25 @@ const bundler = new Bundler({
     await bundler.update({
       '/index.js': {
         content: `
-          import {hello} from './hello.js';
           import person from './static/person.json';
+          import React, {useState} from 'react';
+          import ReactDOM from 'react-dom';
 
-          hello(person.name);
+          function Counter() {
+            const [count, setCount] = useState(0);
+          
+            return (
+              <div>
+                <p>Welcome {person.name}!</p>
+                <p>You clicked {count} times</p>
+                <button onClick={() => setCount(count + 1)}>
+                  Click me
+                </button>
+              </div>
+            );
+          }
+
+          ReactDOM.render(<Counter />, document.getElementById('root'));
         `
       },
       '/static/person.json': {
@@ -58,5 +90,5 @@ const bundler = new Bundler({
         `
       }
     });
-  }, 2000);
+  }, 5000);
 })();
