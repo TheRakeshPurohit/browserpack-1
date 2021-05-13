@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { generateDepGraph } from './dep-graph';
 import packageCache from './cache';
+import semver from 'semver';
 
 const app = express();
 const isDev = process.env.NODE_ENV === 'development';
@@ -30,15 +31,28 @@ app.get(
       ? `${scopeOrName}/${nameOrVersion}`
       : scopeOrName;
     const packageVersion = version || nameOrVersion;
+    const packageVersionSemver = semver.minVersion(packageVersion);
 
-    let assets = await packageCache.get(packageName, packageVersion);
+    if (packageVersionSemver) {
+      let assets = await packageCache.get(
+        packageName,
+        packageVersionSemver.version
+      );
 
-    if (!assets) {
-      assets = await generateDepGraph(packageName, packageVersion);
-      packageCache.set(packageName, packageVersion, assets);
+      if (!assets) {
+        assets = await generateDepGraph(
+          packageName,
+          packageVersionSemver.version
+        );
+        packageCache.set(packageName, packageVersionSemver.version, assets);
+      }
+
+      res.json({ assets });
+    } else {
+      res.sendStatus(400);
+
+      res.json({ error: 'Invalid package version' });
     }
-
-    res.json({ assets });
   }
 );
 

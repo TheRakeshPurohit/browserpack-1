@@ -9,7 +9,7 @@ function sendMesssage(message: BundlerWorkerMessage) {
   self.postMessage(message);
 }
 
-self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) => {
+self.onmessage = async (evt: MessageEvent<BundlerWorkerMessage>) => {
   switch (evt.data.type) {
     case 'BUILD_DEP_GRAPH': {
       const { files, entryPoint, invalidateFiles } = evt.data.payload;
@@ -23,7 +23,7 @@ self.onmessage = (evt: MessageEvent<BundlerWorkerMessage>) => {
           }
         }
 
-        const depGraph = generateDepGraph(files, entryPoint);
+        const depGraph = await generateDepGraph(files, entryPoint);
 
         sendMesssage({
           type: 'DEP_GRAPH_READY',

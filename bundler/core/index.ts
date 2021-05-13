@@ -65,7 +65,7 @@ export default class Browserpack {
       }
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const workerListener = (evt: MessageEvent<BundlerWorkerMessage>) => {
         if (evt.data.type === 'DEP_GRAPH_READY') {
           this.bundlerWorker.removeEventListener('message', workerListener);
@@ -74,7 +74,7 @@ export default class Browserpack {
 
           resolve(this.depGraph);
         } else if (evt.data.type === 'ERR') {
-          throw evt.data.payload.err;
+          reject(evt.data.payload.err);
         }
       };
 

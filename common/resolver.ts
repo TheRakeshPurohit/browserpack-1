@@ -13,7 +13,7 @@ export function resolveFile(
   depPath: string,
   importerPath: string = '/'
 ) {
-  const aboluteFilePath = (() => {
+  const absoluteFilePath = (() => {
     if (isExternalDep(depPath)) {
       const packageRootPath = findRootPathOfPackage(importerPath);
 
@@ -22,21 +22,21 @@ export function resolveFile(
       return path.resolve('/', path.dirname(importerPath), depPath);
     }
   })();
-  const filename = path.basename(aboluteFilePath);
+  const filename = path.basename(absoluteFilePath);
   const extension = getFileExtension(filename);
 
   if (extension) {
-    if (files[aboluteFilePath]) return aboluteFilePath;
+    if (files[absoluteFilePath]) return absoluteFilePath;
   } else {
     for (const extension of extensions) {
-      const dependencyWithExtension = `${aboluteFilePath}.${extension}`;
+      const dependencyWithExtension = `${absoluteFilePath}.${extension}`;
       if (files[dependencyWithExtension]) {
         return dependencyWithExtension;
       }
     }
 
     for (const extension of extensions) {
-      const indexFileWithExtension = `${aboluteFilePath}/index.${extension}`;
+      const indexFileWithExtension = `${absoluteFilePath}/index.${extension}`;
 
       if (files[indexFileWithExtension]) {
         return indexFileWithExtension;
@@ -44,7 +44,7 @@ export function resolveFile(
     }
 
     const packageJSONContent = (() => {
-      const asset = files[`${aboluteFilePath}/package.json`];
+      const asset = files[`${absoluteFilePath}/package.json`];
 
       if (!asset) return null;
 
@@ -55,14 +55,14 @@ export function resolveFile(
       try {
         const packageJSON = JSON.parse(packageJSONContent);
         const mainFile = packageJSON.main;
-        const mainFilePath = path.join(aboluteFilePath, mainFile);
+        const mainFilePath = path.join(absoluteFilePath, mainFile);
 
         if (mainFile && files[mainFilePath]) {
           return mainFilePath;
         }
       } catch {
         throw new Error(
-          `invalid json found in ${aboluteFilePath}/package.json`
+          `invalid json found in ${absoluteFilePath}/package.json`
         );
       }
     }
