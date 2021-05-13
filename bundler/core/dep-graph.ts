@@ -1,4 +1,4 @@
-import { DepGraph, Files } from '@common/api';
+import { DepGraph, Files } from '@common/types';
 import { createAsset } from '../utils';
 import path from 'path';
 import { resolveFile } from './resolver';

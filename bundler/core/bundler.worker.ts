@@ -1,4 +1,4 @@
-import { BundlerWorkerMessage } from '@common/api';
+import { BundlerWorkerMessage } from '@common/types';
 import { generateDepGraph } from './dep-graph';
 import path from 'path';
 import { getFileExtension } from '../utils';

@@ -1,4 +1,4 @@
-import { Files } from '@common/api';
+import { Files } from '@common/types';
 import { getFileExtension } from '../utils';
 import path from 'path';
 
