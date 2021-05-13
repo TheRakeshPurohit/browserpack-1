@@ -28,6 +28,7 @@ const bundler = new Bundler({
         import person from './static/person.json';
         import React, {useState} from 'react';
         import ReactDOM from 'react-dom';
+        import './index.css';
 
         function Counter() {
           const [count, setCount] = useState(0);

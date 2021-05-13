@@ -8,11 +8,11 @@ export async function generateDepGraph(
   files: Files,
   entryPoint: string = '/index.js'
 ) {
-  let importer = entryPoint;
-  const queue = [importer];
+  const queue = [{ importer: entryPoint, filePath: entryPoint }];
   const depGraph: DepGraph = {};
 
-  for (const filePath of queue) {
+  for (const elem of queue) {
+    const { importer, filePath } = elem;
     // we will install packages later
     if (isExternalDep(filePath)) continue;
 
@@ -37,9 +37,12 @@ export async function generateDepGraph(
     })();
 
     depGraph[resolvedFilePath] = asset;
-    importer = filePath;
+    const dependencies = asset.dependencies.map((dependency) => ({
+      filePath: dependency,
+      importer: filePath
+    }));
 
-    queue.push(...asset.dependencies);
+    queue.push(...dependencies);
   }
 
   return depGraph;
