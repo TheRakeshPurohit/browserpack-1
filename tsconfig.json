@@ -10,7 +10,8 @@
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@bundler": ["./bundler/index.ts"]
+      "@bundler": ["./bundler/index.ts"],
+      "@common/*": ["./common/*"]
     },
     "lib": ["WebWorker", "DOM"],
     "typeRoots": ["./node_modules/@types", "./typings"]

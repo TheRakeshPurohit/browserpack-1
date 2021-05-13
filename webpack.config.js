@@ -34,7 +34,8 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
-      '@bundler': path.resolve(__dirname, 'bundler/index.ts')
+      '@bundler': path.resolve(__dirname, 'bundler/index.ts'),
+      '@common': path.resolve(__dirname, 'common')
     }
   },
   output: {

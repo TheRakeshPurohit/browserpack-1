@@ -1,4 +1,4 @@
-import { Asset, Files } from './types';
+import { Asset, Files } from '@common/api';
 import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';

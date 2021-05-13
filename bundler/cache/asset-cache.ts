@@ -1,4 +1,4 @@
-import { Asset } from '../types';
+import { Asset } from '../../common/api';
 
 class AssetCache {
   constructor(private assetCache: Record<string, Asset> = {}) {}
