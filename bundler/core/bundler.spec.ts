@@ -2,7 +2,6 @@ import Bundler from '.';
 
 describe('Bundler', () => {
   beforeEach(() => {
-    expect.hasAssertions();
     const styleTags = document.getElementsByTagName('style');
 
     // avoid css sideeffects of previous tests
