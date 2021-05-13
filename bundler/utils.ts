@@ -16,7 +16,8 @@ export function createAsset(
 
   if (['js', 'ts'].includes(resolvedFileExtension)) {
     const ast = babelParser.parse(file.content, {
-      sourceType: 'module'
+      sourceType: 'module',
+      plugins: ['jsx']
     });
 
     babelTraverse(ast, {
@@ -26,7 +27,7 @@ export function createAsset(
     });
 
     const code = Babel.transform(file.content, {
-      presets: ['env']
+      presets: ['env', 'react']
     }).code;
 
     return {

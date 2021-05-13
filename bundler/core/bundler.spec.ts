@@ -52,7 +52,7 @@ describe('Bundler', () => {
       await bundler.bundle();
     } catch (err) {
       expect(err).toEqual(
-        new Error(`Cannot find module '/hello.js' from '/index.js'`)
+        new Error(`Cannot find module './hello.js' from '/index.js'`)
       );
     }
   });
@@ -250,5 +250,35 @@ describe('Bundler', () => {
     });
 
     expect(document.body.innerHTML).toEqual('edited lib');
+  });
+
+  it('should support npm packages', async () => {
+    const packageJSON = {
+      dependencies: {
+        react: '^17.0.1',
+        'react-dom': '^17.0.1'
+      }
+    };
+    const files = {
+      '/index.js': {
+        content: `
+          import React from 'react';
+          import ReactDOM from 'react-dom';
+
+          ReactDOM.render(<h1>Hello world from React!</h1>, document.getElementById('root'));
+      `
+      },
+      '/package.json': {
+        content: JSON.stringify(packageJSON)
+      }
+    };
+    const bundler = new Bundler({ files });
+
+    await bundler.bundle();
+    bundler.run();
+
+    expect(document.getElementById('root')?.innerHTML).toEqual(
+      '<h1>Hello world from React!</h1>'
+    );
   });
 });

@@ -111,10 +111,8 @@ export default class Browserpack {
       }
     };
     const require = (relativePath: string) => {
-      const absolutePath = path.join(path.dirname(filePath), relativePath);
-
       return this.runCode(
-        resolveFile(this.config.files, absolutePath) as string
+        resolveFile(this.config.files, relativePath, filePath) as string
       );
     };
     const exports = {};

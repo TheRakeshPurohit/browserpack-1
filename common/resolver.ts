@@ -19,7 +19,7 @@ export function resolveFile(
 
       return `${packageRootPath}/node_modules/${depPath}`;
     } else {
-      return path.resolve(path.dirname(importerPath), depPath);
+      return path.resolve('/', path.dirname(importerPath), depPath);
     }
   })();
   const filename = path.basename(aboluteFilePath);

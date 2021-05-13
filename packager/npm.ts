@@ -1,6 +1,6 @@
 import path from 'path';
 import decompress from 'decompress';
-import fetch from 'node-fetch';
+import 'isomorphic-fetch';
 import { Files } from '@common/api';
 
 export async function getPackageFiles(

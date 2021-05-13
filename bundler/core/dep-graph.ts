@@ -1,6 +1,5 @@
 import { DepGraph, Files } from '@common/api';
 import { createAsset } from '../utils';
-import path from 'path';
 import { resolveFile } from '../../common/resolver';
 import assetCache from '../cache/asset-cache';
 
@@ -13,7 +12,7 @@ export function generateDepGraph(
   const depGraph: DepGraph = {};
 
   for (const filePath of queue) {
-    const resolvedFilePath = resolveFile(files, filePath);
+    const resolvedFilePath = resolveFile(files, filePath, importer);
 
     if (!resolvedFilePath) {
       throw new Error(`Cannot find module '${filePath}' from '${importer}'`);
@@ -36,12 +35,7 @@ export function generateDepGraph(
     depGraph[resolvedFilePath] = asset;
     importer = filePath;
 
-    // get the absolute path of the dependency
-    const dependencies = asset.dependencies.map((dependency) =>
-      path.resolve(path.dirname(filePath), dependency)
-    );
-
-    queue.push(...dependencies);
+    queue.push(...asset.dependencies);
   }
 
   return depGraph;
