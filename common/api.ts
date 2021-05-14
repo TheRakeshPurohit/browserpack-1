@@ -50,10 +50,13 @@ export type BundlerWorkerMessage =
 
 export type ClientMessage =
   | {
-      type: 'INIT';
+      type: 'BUNDLE';
       payload: {
         files: Files;
       };
+    }
+  | {
+      type: 'BUNDLE_READY';
     }
   | {
       type: 'BUNDLER_READY';
@@ -63,4 +66,13 @@ export type ClientMessage =
       payload: {
         files: Files;
       };
+    }
+  | {
+      type: 'ERR';
+      payload: {
+        err: Error;
+      };
+    }
+  | {
+      type: 'RUN';
     };

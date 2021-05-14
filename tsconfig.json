@@ -11,7 +11,8 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@bundler": ["./bundler/index.ts"],
-      "@common/*": ["./common/*"]
+      "@common/*": ["./common/*"],
+      "@client": ["./client/index.ts"]
     },
     "lib": ["WebWorker", "DOM"],
     "typeRoots": ["./node_modules/@types", "./typings"]
