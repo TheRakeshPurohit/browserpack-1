@@ -1,20 +1,52 @@
 import Browserpack from '@client';
 import { Files } from '@common/api';
 
+const packageJSON = {
+  dependencies: {
+    react: '^17.0.2',
+    'react-dom': '^17.0.2'
+  }
+};
 const files: Files = {
+  '/index.css': {
+    content: `
+      p {
+        color: red;
+      }
+    `
+  },
+  '/static/person.json': {
+    content: `
+      {
+        "name": "Ameer Jhan"
+      }
+    `
+  },
   '/index.js': {
     content: `
-      import {hello} from './hello';
+      import person from './static/person.json';
+      import React, {useState} from 'react';
+      import ReactDOM from 'react-dom';
+      import './index.css';
+
+      function Counter() {
+        const [count, setCount] = useState(0);
       
-      hello('Ameer');
-  `
-  },
-  '/hello/index.js': {
-    content: `
-      export function hello(message = 'from browserpack') {
-        document.body.innerHTML = \`Hello world \${message}\`;
+        return (
+          <div>
+            <p>Welcome {person.name}!</p>
+            <p>You clicked {count} times</p>
+            <button onClick={() => setCount(count + 1)}>
+              Click me
+            </button>
+          </div>
+        );
       }
-  `
+      ReactDOM.render(<Counter />, document.getElementById('root'));
+    `
+  },
+  '/package.json': {
+    content: JSON.stringify(packageJSON)
   }
 };
 
@@ -27,12 +59,33 @@ browserpack.onReady(async () => {
 
   setTimeout(() => {
     browserpack.patch({
-      '/hello/index.js': {
+      '/index.js': {
         content: `
-          export function hello(message = 'from browserpack') {
-            document.body.innerHTML = \`Hello world edited \${message}\`;
+          import person from './static/person.json';
+          import React, {useState} from 'react';
+          import ReactDOM from 'react-dom';
+          function Counter() {
+            const [count, setCount] = useState(0);
+          
+            return (
+              <div>
+                <p>Welcome {person.name}!</p>
+                <p>You clicked {count} times</p>
+                <button onClick={() => setCount(count + 1)}>
+                  Click me
+                </button>
+              </div>
+            );
           }
-      `
+          ReactDOM.render(<Counter />, document.getElementById('root'));
+        `
+      },
+      '/static/person.json': {
+        content: `
+          {
+            "name": "Ameer Jhan Edited"
+          }
+        `
       }
     });
   }, 5000);
