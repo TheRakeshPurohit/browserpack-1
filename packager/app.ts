@@ -7,7 +7,6 @@ import semver from 'semver';
 
 const app = express();
 const isDev = process.env.NODE_ENV === 'development';
-const serverPort = process.env.PORT || 8000;
 
 type PackParams = {
   scopeOrName: string;
@@ -56,10 +55,4 @@ app.get(
   }
 );
 
-app.listen(process.env.PORT || 8000, () => {
-  console.log(
-    `🚀 express ${
-      isDev ? 'development' : 'production'
-    } server listening at ${serverPort}`
-  );
-});
+export default app;
