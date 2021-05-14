@@ -47,3 +47,20 @@ export type BundlerWorkerMessage =
         transformedCode: string;
       };
     };
+
+export type ClientMessage =
+  | {
+      type: 'INIT';
+      payload: {
+        files: Files;
+      };
+    }
+  | {
+      type: 'BUNDLER_READY';
+    }
+  | {
+      type: 'PATCH';
+      payload: {
+        files: Files;
+      };
+    };
