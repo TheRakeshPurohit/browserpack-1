@@ -4,7 +4,7 @@
   "description": "Browser based bundler",
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "dev-app": "lerna run start --scope=@browserpack/app",
+    "dev-app": "lerna run start --stream --scope=@browserpack/app",
     "build-app": "lerna run build --scope=@browserpack/app",
     "dev-preview": "cross-env NODE_ENV=development webpack serve --progress --config preview/webpack.config.js",
     "playground": "cross-env NODE_ENV=development webpack serve --progress --config playground/webpack.config.js",

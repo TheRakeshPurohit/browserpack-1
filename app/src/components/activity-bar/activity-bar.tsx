@@ -1,4 +1,4 @@
-import { useStore } from '@hackbox/store';
+import { useStore } from '@app/store';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 

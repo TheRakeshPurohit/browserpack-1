@@ -3,7 +3,7 @@ import {
   getFolderIcon,
   getOpenFolderIcon,
   getFileIcon
-} from '@hackbox/utils/utils';
+} from '@app/utils/utils';
 
 type IconProps = {
   isDir?: boolean;

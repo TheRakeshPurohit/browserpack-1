@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@hackbox/components/icon/icon';
+import Icon from '@app/components/icon/icon';
 import styled from 'styled-components';
 
 const Container = styled.div`

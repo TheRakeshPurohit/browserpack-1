@@ -1,7 +1,7 @@
 import React from 'react';
-import Icon from '@hackbox/components/icon/icon';
-import { useStore } from '@hackbox/store';
-import { getBasename } from '@hackbox/utils/utils';
+import Icon from '@app/components/icon/icon';
+import { useStore } from '@app/store';
+import { getBasename } from '@app/utils/utils';
 import { MouseEvent, ReactNode } from 'react';
 import styled from 'styled-components';
 

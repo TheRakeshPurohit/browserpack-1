@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { useStore } from '@hackbox/store';
+import { useStore } from '@app/store';
 import styled from 'styled-components';
 import Breadcrumbs from './components/breadcrumbs/breadcrumbs';
 import EmptyState from './components/empty-state/empty-state';
@@ -7,7 +7,7 @@ import Tabs from './components/tabs/tabs';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { initVimMode } from 'monaco-vim';
-import { getVimStatusContainerId } from '@hackbox/utils/utils';
+import { getVimStatusContainerId } from '@app/utils/utils';
 
 const Container = styled.div`
   display: flex;

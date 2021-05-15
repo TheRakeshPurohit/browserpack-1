@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
-import ActivityBar from '@hackbox/components/activity-bar/activity-bar';
-import Editor from '@hackbox/components/editor/editor';
-import SideBar from '@hackbox/components/sidebar/sidebar';
-import Statusbar from '@hackbox/components/statusbar/statusbar';
+import ActivityBar from '@app/components/activity-bar/activity-bar';
+import Editor from '@app/components/editor/editor';
+import SideBar from '@app/components/sidebar/sidebar';
+import Statusbar from '@app/components/statusbar/statusbar';
 import 'vscode-codicons/dist/codicon.css';
 import { useStore } from './store';
 import { FILES } from './templates/react';
 import SplitPane from 'react-split-pane';
 import BrowserPreview from './components/browser-preview/browser-preview';
+import Browserpack from '@client';
+
+console.log(Browserpack);
 
 const Container = styled.div`
   height: 100vh;

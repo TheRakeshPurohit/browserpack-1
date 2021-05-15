@@ -1,4 +1,4 @@
-import { startSandpack } from '@hackbox/utils/utils';
+import { startSandpack } from '@app/utils/utils';
 import styled from 'styled-components';
 
 const Container = styled.div`

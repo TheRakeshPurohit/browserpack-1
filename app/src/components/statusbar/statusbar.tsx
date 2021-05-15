@@ -1,10 +1,10 @@
-import { useStore } from '@hackbox/store';
+import { useStore } from '@app/store';
 import React from 'react';
 import styled from 'styled-components';
 import {
   getLanguageNameFromExt,
   getVimStatusContainerId
-} from '@hackbox/utils/utils';
+} from '@app/utils/utils';
 
 const Container = styled.div`
   background: ${(props) => props.theme.colors['statusBar.background']};

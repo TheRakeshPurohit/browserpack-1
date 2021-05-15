@@ -5,10 +5,10 @@ import Tree, {
   useTreeState
 } from 'react-hyper-tree';
 import styled, { createGlobalStyle } from 'styled-components';
-import { FILES } from '@hackbox/templates/react';
-import { convertFilesToTree, getBasename } from '@hackbox/utils/utils';
-import Icon from '@hackbox/components/icon/icon';
-import { useStore } from '@hackbox/store';
+import { FILES } from '@app/templates/react';
+import { convertFilesToTree, getBasename } from '@app/utils/utils';
+import Icon from '@app/components/icon/icon';
+import { useStore } from '@app/store';
 
 const NodeContainer = styled.div`
   display: flex;

@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "paths": {
-      "@hackbox/*": ["src/*"]
+      "@app/*": ["src/*"],
+      "@client": ["../client/index.ts"],
+      "@common/*": ["../common/*"]
     }
   }
 }
