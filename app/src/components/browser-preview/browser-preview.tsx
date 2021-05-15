@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Browserpack from '@client';
-import { FILES } from '../../templates/react';
 import { useEffect } from 'react';
+import previewManager from '@app/utils/preview-manager';
+import { FILES } from '@app/templates/react';
 
 const Container = styled.div`
   height: calc(100vh-25px);
@@ -10,13 +10,13 @@ const Container = styled.div`
 
 export default function BrowserPreview() {
   useEffect(() => {
-    const manager = new Browserpack('#browser-preview', FILES);
+    previewManager.init(FILES);
 
-    manager.onReady(async () => {
-      await manager.bundle();
-      manager.run();
+    previewManager.onReady(async () => {
+      await previewManager.bundle();
+      previewManager.run();
     });
-  });
+  }, []);
 
   return <Container id="browser-preview"></Container>;
 }

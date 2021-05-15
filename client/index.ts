@@ -4,33 +4,38 @@ import { listenForWindowMessage, sendMessageFromClient } from '@common/utils';
 class Browserpack {
   private onReadyHandler: () => void;
   private isBundlerReady: boolean;
-  private iframeElement: HTMLIFrameElement;
+  private iframeElement: HTMLIFrameElement | null;
   private isBundleReady: boolean;
 
   constructor(
-    iframeContainerId: string,
-    private files: Files,
+    private iframeContainerId: string,
+    private files: Files = {},
     private previewURL = 'http://localhost:3001'
   ) {
     this.onReadyHandler = () => {};
+    this.isBundlerReady = false;
+    this.isBundleReady = false;
+    this.iframeElement = null;
+  }
+
+  init(files?: Files) {
+    if (files) this.files = files;
+
     this.iframeElement = document.createElement('iframe');
     this.iframeElement.setAttribute('src', this.previewURL);
     this.iframeElement.height = '100%';
     this.iframeElement.width = '100%';
     this.iframeElement.setAttribute('frameBorder', '0');
 
-    const iframeContainer = document.querySelector(iframeContainerId);
+    const iframeContainer = document.querySelector(this.iframeContainerId);
 
     if (!iframeContainer) {
       throw new Error(
-        `iframe container element ${iframeContainerId} not found`
+        `iframe container element ${this.iframeContainerId} not found`
       );
     }
 
     iframeContainer?.appendChild(this.iframeElement);
-
-    this.isBundlerReady = false;
-    this.isBundleReady = false;
 
     listenForWindowMessage((evt) => {
       if (evt.data.type === 'BUNDLER_READY') {
@@ -63,12 +68,14 @@ class Browserpack {
           }
         });
 
-        sendMessageFromClient(this.iframeElement, {
-          type: 'BUNDLE',
-          payload: {
-            files: this.files
-          }
-        });
+        if (this.iframeElement) {
+          sendMessageFromClient(this.iframeElement, {
+            type: 'BUNDLE',
+            payload: {
+              files: this.files
+            }
+          });
+        }
       });
     } else {
       throw new Error('Bundler is not yet ready');
@@ -81,9 +88,11 @@ class Browserpack {
     } else if (this.isBundleReady) {
       throw new Error('You need to bundle before running');
     } else {
-      sendMessageFromClient(this.iframeElement, {
-        type: 'RUN'
-      });
+      if (this.iframeElement) {
+        sendMessageFromClient(this.iframeElement, {
+          type: 'RUN'
+        });
+      }
     }
   }
 
@@ -93,12 +102,14 @@ class Browserpack {
     } else if (this.isBundleReady) {
       throw new Error('You need to bundle before running');
     } else {
-      sendMessageFromClient(this.iframeElement, {
-        type: 'PATCH',
-        payload: {
-          files
-        }
-      });
+      if (this.iframeElement) {
+        sendMessageFromClient(this.iframeElement, {
+          type: 'PATCH',
+          payload: {
+            files
+          }
+        });
+      }
     }
   }
 }

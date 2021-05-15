@@ -8,6 +8,9 @@ import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { initVimMode } from 'monaco-vim';
 import { getVimStatusContainerId } from '@app/utils/utils';
+import useKeys from '@rooks/use-keys';
+import useDebounce from '@rooks/use-debounce';
+import previewManager from '@app/utils/preview-manager';
 
 const Container = styled.div`
   display: flex;
@@ -21,11 +24,29 @@ export default function Editor() {
   const openFiles = useStore((state) => state.openFiles);
   const colorMode = useStore((state) => state.colorMode);
   const monacoEditorRef = useRef<MonacoEditor | null>();
-  const loadEditorModel = (selectedFile: string) => {
+  const getEditorModel = (selectedFile: string) => {
     if (monacoEditorRef.current && selectedFile) {
       const editorModel = monaco.editor
         .getModels()
         .find((model) => model.uri.path === `${selectedFile}`);
+
+      return editorModel;
+    }
+  };
+  const onFileSave = useDebounce(() => {
+    const editorModel = getEditorModel(selectedFile);
+
+    if (editorModel) {
+      previewManager.patch({
+        [selectedFile]: {
+          content: editorModel.getValue()
+        }
+      });
+    }
+  }, 250);
+  const loadEditorModel = (selectedFile: string) => {
+    if (monacoEditorRef.current && selectedFile) {
+      const editorModel = getEditorModel(selectedFile);
 
       if (editorModel) {
         monacoEditorRef.current.editor?.setModel(editorModel);
@@ -35,6 +56,13 @@ export default function Editor() {
   const onEditorDidMount = useCallback((editor) => {
     initVimMode(editor, document.getElementById(getVimStatusContainerId()));
   }, []);
+  useKeys(['Control', 's'], () => onFileSave());
+
+  useKeys(['Meta', 's'], (evt) => {
+    evt.preventDefault();
+
+    onFileSave();
+  });
 
   // load the file whenever a selection is changed
   useEffect(() => {

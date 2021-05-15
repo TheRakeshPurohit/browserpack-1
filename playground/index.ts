@@ -52,6 +52,8 @@ const files: Files = {
 
 const browserpack = new Browserpack('#preview', files);
 
+browserpack.init();
+
 browserpack.onReady(async () => {
   await browserpack.bundle();
 
