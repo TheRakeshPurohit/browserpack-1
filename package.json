@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Browser based bundler",
   "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "dev-app": "lerna run start --scope=@browserpack/app",
+    "build-app": "lerna run build --scope=@browserpack/app",
     "dev-bundler": "cross-env NODE_ENV=development webpack serve --progress",
     "playground": "cross-env NODE_ENV=development webpack serve --progress --config webpack.playground.config.js",
     "dev-packager": "cross-env NODE_ENV=development nodemon --watch packager -e ts,js,json --exec ts-node --project tsconfig.packager.json --require tsconfig-paths/register --files packager/index.ts",
