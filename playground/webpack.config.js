@@ -5,13 +5,14 @@ const dotenv = require('dotenv').config();
 const webpack = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development';
-const htmlTemplatePath = path.resolve(__dirname, 'playground', 'index.html');
-const distDir = path.join(__dirname, 'playground', 'dist');
+const htmlTemplatePath = path.resolve(__dirname, 'index.html');
+const distDir = path.join(__dirname, 'dist');
 const devServerPort = process.env.PORT || 3000;
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
   entry: './playground/index.ts',
+  context: path.resolve(__dirname, '..'),
   devServer: {
     contentBase: distDir,
     compress: true,
@@ -31,9 +32,9 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
-      '@bundler': path.resolve(__dirname, 'bundler/index.ts'),
-      '@common': path.resolve(__dirname, 'common'),
-      '@client': path.resolve(__dirname, 'client')
+      '@bundler': path.resolve(__dirname, '..', 'bundler/index.ts'),
+      '@common': path.resolve(__dirname, '..', 'common'),
+      '@client': path.resolve(__dirname, '..', 'client')
     }
   },
   output: {

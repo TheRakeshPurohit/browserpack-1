@@ -16,5 +16,6 @@
     },
     "lib": ["WebWorker", "DOM"],
     "typeRoots": ["./node_modules/@types", "./typings"]
-  }
+  },
+  "exclude": ["app", "packager"]
 }
