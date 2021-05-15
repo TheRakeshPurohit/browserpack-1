@@ -10,9 +10,6 @@ import { useStore } from './store';
 import { FILES } from './templates/react';
 import SplitPane from 'react-split-pane';
 import BrowserPreview from './components/browser-preview/browser-preview';
-import Browserpack from '@client';
-
-console.log(Browserpack);
 
 const Container = styled.div`
   height: 100vh;

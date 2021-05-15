@@ -1,33 +1,52 @@
-export const FILES = {
-  '/public/index.html': {
-    code: `<!DOCTYPE html>
-    <html>
-        <head>
-            <title>Example</title>
-        </head>
-        <body>
-            <div id="root"></div>
-        </body>
-    </html>`
+import { Files } from '@common/api';
+
+const packageJSON = {
+  dependencies: {
+    react: '^17.0.2',
+    'react-dom': '^17.0.2'
+  }
+};
+const FILES: Files = {
+  '/index.css': {
+    content: `
+      p {
+        color: red;
+      }
+    `
   },
-  '/src/index.tsx': {
-    code: `import React from 'react';
-    import ReactDOM from 'react-dom';
-    
-    ReactDOM.render(<h1>hello world!</h1>, document.getElementById('root'));
-    `,
-    'src/index.css': `body {
-      margin: 0;
-      padding: 0;
-    }
+  '/static/person.json': {
+    content: `
+      {
+        "name": "Ameer Jhan"
+      }
+    `
+  },
+  '/index.js': {
+    content: `
+      import person from './static/person.json';
+      import React, {useState} from 'react';
+      import ReactDOM from 'react-dom';
+      import './index.css';
+
+      function Counter() {
+        const [count, setCount] = useState(0);
+      
+        return (
+          <div>
+            <p>Welcome {person.name}!</p>
+            <p>You clicked {count} times</p>
+            <button onClick={() => setCount(count + 1)}>
+              Click me
+            </button>
+          </div>
+        );
+      }
+      ReactDOM.render(<Counter />, document.getElementById('root'));
     `
   },
   '/package.json': {
-    code: `{
-    "name": "hackbox",
-    "author": "Ameer Jhan",
-    "dependencies": {}
-}
-`
+    content: JSON.stringify(packageJSON)
   }
-} as any;
+};
+
+export { FILES };

@@ -1,10 +1,11 @@
+import { Files } from '@common/api';
 import { convertFilesToTree } from './utils';
 
-const sampleFiles = {
-  '/public/index.html': '',
-  '/src/index.tsx': '',
-  '/src/index.css': '',
-  '/package.json': ''
+const sampleFiles: Files = {
+  '/public/index.html': { content: '' },
+  '/src/index.tsx': { content: '' },
+  '/src/index.css': { content: '' },
+  '/package.json': { content: '' }
 };
 
 describe('utils', () => {

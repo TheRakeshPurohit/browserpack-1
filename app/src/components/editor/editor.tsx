@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useStore } from '@app/store';
 import styled from 'styled-components';
 import Breadcrumbs from './components/breadcrumbs/breadcrumbs';

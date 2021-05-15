@@ -7,12 +7,17 @@ class Browserpack {
   private iframeElement: HTMLIFrameElement;
   private isBundleReady: boolean;
 
-  constructor(iframeContainerId: string, private files: Files) {
+  constructor(
+    iframeContainerId: string,
+    private files: Files,
+    private previewURL = 'http://localhost:3001'
+  ) {
     this.onReadyHandler = () => {};
     this.iframeElement = document.createElement('iframe');
-    this.iframeElement.setAttribute('src', 'http://localhost:3001');
+    this.iframeElement.setAttribute('src', this.previewURL);
     this.iframeElement.height = '100%';
     this.iframeElement.width = '100%';
+    this.iframeElement.setAttribute('frameBorder', '0');
 
     const iframeContainer = document.querySelector(iframeContainerId);
 
@@ -37,6 +42,10 @@ class Browserpack {
 
   onReady(readyHandler: () => void) {
     this.onReadyHandler = readyHandler;
+
+    if (this.isBundlerReady) {
+      this.onReadyHandler();
+    }
   }
 
   bundle() {

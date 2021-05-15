@@ -1,3 +1,4 @@
+import { Files } from '@common/api';
 import createStore from 'zustand';
 import vsDarkTheme from './themes/vs-dark';
 import vsLightTheme from './themes/vs-light';
@@ -6,21 +7,21 @@ import { getColorMode, loadMonacoModels, saveColorMode } from './utils/utils';
 type State = {
   openFiles: string[];
   colorMode: 'light' | 'dark';
-  files: Record<string, { code: string }>;
+  files: Files;
   setOpenFiles: (files: string[]) => void;
   selectedFile: string;
   setSelectedFile: (filePath: string) => void;
   theme: any;
   toggleColorMode: () => void;
   closeFile: (filePath: string) => void;
-  setFiles: (files: Record<string, { code: string }>) => void;
+  setFiles: (files: Files) => void;
 };
 
 export const useStore = createStore<State>((set) => ({
   openFiles: [],
   colorMode: getColorMode(),
   files: {},
-  setFiles: (files: Record<string, { code: string }>) =>
+  setFiles: (files: Files) =>
     set(() => {
       loadMonacoModels(files);
 
