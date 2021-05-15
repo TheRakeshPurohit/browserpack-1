@@ -5,13 +5,15 @@ const dotenv = require('dotenv').config();
 const webpack = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development';
-const htmlTemplatePath = path.resolve(__dirname, 'preview', 'index.html');
+const htmlTemplatePath = path.resolve(__dirname, 'index.html');
 const distDir = path.join(__dirname, 'dist');
 const devServerPort = process.env.PORT || 3001;
+const rootDir = path.resolve(__dirname, '..');
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
   entry: './preview/index.ts',
+  context: rootDir,
   performance: {
     maxAssetSize: 5e6
   },
@@ -38,8 +40,8 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
-      '@bundler': path.resolve(__dirname, 'bundler/index.ts'),
-      '@common': path.resolve(__dirname, 'common')
+      '@bundler': path.resolve(__dirname, '..', 'bundler/index.ts'),
+      '@common': path.resolve(__dirname, '..', 'common')
     }
   },
   output: {
