@@ -1,7 +1,7 @@
-import { Asset } from '@common/api';
+import { Asset, DepGraph } from '@common/api';
 
 class AssetCache {
-  constructor(private assetCache: Record<string, Asset> = {}) {}
+  constructor(private assetCache: DepGraph = {}) {}
 
   public get(key: string) {
     return this.assetCache[key];
@@ -13,6 +13,10 @@ class AssetCache {
 
   public reset() {
     this.assetCache = {};
+  }
+
+  public get depGraph() {
+    return this.assetCache;
   }
 
   public remove(key: string) {

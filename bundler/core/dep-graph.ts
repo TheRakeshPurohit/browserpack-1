@@ -1,5 +1,5 @@
 import { DepGraph, Files } from '@common/api';
-import { createAsset } from '../utils';
+import { createAsset, findRemovedFiles } from '../utils';
 import { resolveFile } from '@common/resolver';
 import assetCache from '../cache/asset-cache';
 import { isExternalDep } from '@common/utils';
@@ -43,6 +43,12 @@ export async function generateDepGraph(
     }));
 
     queue.push(...dependencies);
+  }
+
+  const removedFiles = findRemovedFiles(assetCache.depGraph, depGraph);
+
+  for (const removedFile of removedFiles) {
+    assetCache.remove(removedFile);
   }
 
   return depGraph;

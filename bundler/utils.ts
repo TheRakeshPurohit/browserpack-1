@@ -1,4 +1,4 @@
-import { Asset, Files } from '@common/api';
+import { Asset, DepGraph, Files } from '@common/api';
 import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';
@@ -60,4 +60,17 @@ export function createAsset(
   } else {
     return null;
   }
+}
+
+export function findRemovedFiles(
+  oldDepGraph: DepGraph,
+  newDepGraph: DepGraph
+): string[] {
+  const removedFiles = [];
+
+  for (const file in oldDepGraph) {
+    if (!newDepGraph[file]) removedFiles.push(file);
+  }
+
+  return removedFiles;
 }

@@ -5,6 +5,7 @@ import path from 'path';
 import { getFileExtension } from '@common/utils';
 import moduleCache from '../cache/module-cache';
 import packageCache from '../cache/package-cache';
+import { findRemovedFiles } from '../utils';
 
 export interface BrowserPackConfig {
   files: Files;
@@ -152,13 +153,7 @@ export default class Browserpack {
   }
 
   private findRemovedFiles(prevDepGraph: DepGraph) {
-    const removedFiles = [];
-
-    for (const file in prevDepGraph) {
-      if (!this.depGraph[file]) removedFiles.push(file);
-    }
-
-    return removedFiles;
+    return findRemovedFiles(prevDepGraph, this.depGraph);
   }
 
   private runCode(filePath: string) {
@@ -233,6 +228,8 @@ export default class Browserpack {
         styleTag.remove();
       }
     }
+
+    moduleCache.remove(filePath);
   }
 
   async update(files: Files) {
