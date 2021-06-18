@@ -10,7 +10,8 @@ const jestConfig = {
   transform: {
     '^.+\\.worker.[t|j]sx?$': '<rootDir>/test/web-worker-transformer.js'
   },
-  setupFiles: ['<rootDir>/test/setup.js']
+  setupFiles: ['<rootDir>/test/setup.js'],
+  modulePathIgnorePatterns: ['<rootDir>/app']
 };
 
 module.exports = jestConfig;
