@@ -17,7 +17,7 @@ export function createAsset(
   if (['js', 'ts'].includes(resolvedFileExtension)) {
     const ast = babelParser.parse(file.content, {
       sourceType: 'module',
-      plugins: ['jsx']
+      plugins: ['jsx', 'decorators-legacy', 'classProperties']
     });
 
     babelTraverse(ast, {
@@ -27,7 +27,11 @@ export function createAsset(
     });
 
     const code = Babel.transform(file.content, {
-      presets: ['env', 'react']
+      presets: ['env', 'react'],
+      plugins: [
+        [Babel.availablePlugins['proposal-decorators'], { legacy: true }],
+        Babel.availablePlugins['proposal-class-properties']
+      ]
     }).code;
 
     return {

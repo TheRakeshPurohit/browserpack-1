@@ -3,47 +3,75 @@ import { Files } from '@common/api';
 
 const packageJSON = {
   dependencies: {
-    react: '^17.0.2',
-    'react-dom': '^17.0.2'
+    '@angular/common': '^11.2.0',
+    '@angular/compiler': '^11.2.0',
+    '@angular/core': '^11.2.0',
+    '@angular/platform-browser': '^11.2.0',
+    '@angular/platform-browser-dynamic': '^11.2.0',
+    'core-js': '3.8.3',
+    'zone.js': '0.11.3',
+    rxjs: '5.5.3'
   }
 };
-const files: Files = {
-  '/index.css': {
-    content: `
-      p {
-        color: red;
-      }
-    `
-  },
-  '/static/person.json': {
-    content: `
-      {
-        "name": "Ameer Jhan"
-      }
-    `
-  },
-  '/index.js': {
-    content: `
-      import person from './static/person.json';
-      import React, {useState} from 'react';
-      import ReactDOM from 'react-dom';
-      import './index.css';
 
-      function Counter() {
-        const [count, setCount] = useState(0);
-      
-        return (
-          <div>
-            <p>Welcome {person.name}!</p>
-            <p>You clicked {count} times</p>
-            <button onClick={() => setCount(count + 1)}>
-              Click me
-            </button>
-          </div>
-        );
+const files: Files = {
+  '/app/app.component.ts': {
+    content: `
+      import { Component } from "@angular/core";
+
+      @Component({
+        selector: "app-root",
+        template: "<h1>Hello {{title}}</h1>"
+      })
+      export class AppComponent {
+        title = "Browserpack";
       }
-      ReactDOM.render(<Counter />, document.getElementById('root'));
     `
+  },
+  '/app/app.module.ts': {
+    content: `
+    import { BrowserModule } from "@angular/platform-browser";
+    import { NgModule } from "@angular/core";
+    import { AppComponent } from "./app.component";
+
+    
+    @NgModule({
+      declarations: [AppComponent],
+      imports: [BrowserModule],
+      providers: [],
+      bootstrap: [AppComponent]
+    })
+    export class AppModule {}
+    `
+  },
+  '/main.ts': {
+    content: `
+    import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+    import { AppModule } from "./app/app.module";
+
+    platformBrowserDynamic()
+      .bootstrapModule(AppModule)
+      .catch(err => console.log(err));
+    
+  `
+  },
+  '/index.html': {
+    content: `
+    <!doctype html>
+    <html lang="en">
+    
+    <head>
+      <meta charset="utf-8">
+      <title>Angular</title>
+      <base href="/">
+    </head>
+    
+    <body>
+      <app-root></app-root>
+    </body>
+    
+    </html>
+  `
   },
   '/package.json': {
     content: JSON.stringify(packageJSON)
@@ -58,37 +86,4 @@ browserpack.onReady(async () => {
   await browserpack.bundle();
 
   browserpack.run();
-
-  setTimeout(() => {
-    browserpack.patch({
-      '/index.js': {
-        content: `
-          import person from './static/person.json';
-          import React, {useState} from 'react';
-          import ReactDOM from 'react-dom';
-          function Counter() {
-            const [count, setCount] = useState(0);
-          
-            return (
-              <div>
-                <p>Welcome {person.name}!</p>
-                <p>You clicked {count} times</p>
-                <button onClick={() => setCount(count + 1)}>
-                  Click me
-                </button>
-              </div>
-            );
-          }
-          ReactDOM.render(<Counter />, document.getElementById('root'));
-        `
-      },
-      '/static/person.json': {
-        content: `
-          {
-            "name": "Ameer Jhan Edited"
-          }
-        `
-      }
-    });
-  }, 5000);
 });

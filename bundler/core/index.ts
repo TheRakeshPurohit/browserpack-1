@@ -185,7 +185,7 @@ export default class Browserpack {
       exports
     };
 
-    if (['js', 'json'].includes(fileExtension)) {
+    if (['js', 'json', 'ts'].includes(fileExtension)) {
       if (cachedModule) return cachedModule;
 
       const asset = this.depGraph[filePath];

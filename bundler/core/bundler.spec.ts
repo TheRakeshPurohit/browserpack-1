@@ -290,4 +290,89 @@ describe('Bundler', () => {
       '<h1>Hello world from React!</h1>'
     );
   });
+
+  it('should support angular project', async () => {
+    const packageJSON = {
+      dependencies: {
+        '@angular/common': '^11.2.0',
+        '@angular/compiler': '^11.2.0',
+        '@angular/core': '^11.2.0',
+        '@angular/platform-browser': '^11.2.0',
+        '@angular/platform-browser-dynamic': '^11.2.0',
+        'core-js': '3.8.3',
+        'zone.js': '0.11.3'
+      }
+    };
+
+    const files = {
+      '/app/app.component.ts': {
+        content: `
+          import { Component } from "@angular/core";
+    
+          @Component({
+            selector: "app-root",
+            template: "<h1>Hello {{title}}</h1>"
+          })
+          export class AppComponent {
+            title = "Browserpack";
+          }
+        `
+      },
+      '/app/app.module.ts': {
+        content: `
+        import { BrowserModule } from "@angular/platform-browser";
+        import { NgModule } from "@angular/core";
+        
+        import { AppComponent } from "./app.component";
+        
+        @NgModule({
+          declarations: [AppComponent],
+          imports: [BrowserModule],
+          providers: [],
+          bootstrap: [AppComponent]
+        })
+        export class AppModule {}
+        `
+      },
+      '/main.ts': {
+        content: `
+        import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+        import { AppModule } from "./app/app.module";
+        
+        platformBrowserDynamic()
+          .bootstrapModule(AppModule)
+          .catch(err => console.log(err));
+        
+      `
+      },
+      '/index.html': {
+        content: `
+        <!doctype html>
+        <html lang="en">
+        
+        <head>
+          <meta charset="utf-8">
+          <title>Angular</title>
+          <base href="/">
+        </head>
+        
+        <body>
+          <app-root></app-root>
+        </body>
+        
+        </html>
+      `
+      },
+      '/package.json': {
+        content: JSON.stringify(packageJSON)
+      }
+    };
+
+    const bundler = new Bundler({ files, entryPoint: '/main.ts' });
+
+    await bundler.bundle();
+    // bundler.run();
+
+    expect(1).toBe(1);
+  });
 });
