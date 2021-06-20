@@ -9,8 +9,9 @@ const packageJSON = {
     '@angular/platform-browser': '^11.2.0',
     '@angular/platform-browser-dynamic': '^11.2.0',
     'core-js': '3.8.3',
-    'zone.js': '0.11.3',
-    rxjs: '5.5.3'
+    tslib: '2.1.0',
+    'zone.js': '0.11.4',
+    rxjs: '6.6.3'
   }
 };
 
@@ -46,6 +47,7 @@ const files: Files = {
   },
   '/main.ts': {
     content: `
+    import "zone.js";
     import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
     import { AppModule } from "./app/app.module";
 

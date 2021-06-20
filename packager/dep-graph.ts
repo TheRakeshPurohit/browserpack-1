@@ -18,6 +18,49 @@ export async function generateDepGraph(
   const entryPointPath = path.join(packagePath, entryPoint);
   const queue = [entryPointPath];
   const depGraph: DepGraph = {};
+  const BLACKLISTED_DIRS = [
+    'demo',
+    'docs',
+    'benchmark',
+    'flow-typed',
+    'src',
+    'bundles',
+    'examples',
+    'scripts',
+    'tests',
+    'test',
+    'umd',
+    'min'
+  ];
+
+  for (const filePath in files) {
+    const [rootDir] = filePath.substring(packagePath.length + 1).split('/');
+
+    if (BLACKLISTED_DIRS.includes(rootDir)) {
+      continue;
+    }
+
+    const filename = path.basename(filePath);
+
+    if (filename === 'package.json') {
+      const packageJSONStr = files[filePath].content;
+      const packageJSON = JSON.parse(packageJSONStr);
+      const dirname = path.dirname(filePath);
+
+      depGraph[filePath] = {
+        code: packageJSONStr,
+        dependencies: []
+      };
+
+      if (packageJSON.main) {
+        const mainFilePath = path.resolve(dirname, packageJSON.main);
+
+        if (files[mainFilePath]) {
+          queue.push(mainFilePath);
+        }
+      }
+    }
+  }
 
   for (const filePath of queue) {
     if (depGraph[filePath]) continue;
