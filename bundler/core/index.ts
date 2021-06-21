@@ -160,6 +160,21 @@ export default class Browserpack {
         NODE_ENV: 'development'
       }
     };
+    const rawRequire = (relativePath: string) => {
+      const resolvedFilePath = resolveFile(
+        this.config.files,
+        relativePath,
+        filePath
+      );
+
+      if (!resolvedFilePath) {
+        throw new Error(
+          `Cannot find module '${relativePath}' from '${filePath}'`
+        );
+      }
+
+      return this.config.files[resolvedFilePath].content;
+    };
     const require = (relativePath: string) => {
       const resolvedFilePath = resolveFile(
         this.config.files,

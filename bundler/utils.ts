@@ -11,6 +11,41 @@ import * as Babel from '@babel/standalone';
 import path from 'path';
 import { getFileExtension, isExternalDep } from '@common/utils';
 
+const templateUrlRegex = /templateUrl\s*:(\s*['"`](.*?)['"`]\s*([,}]))/gm;
+const stylesRegex = /styleUrls *:(\s*\[[^\]]*?\])/g;
+const stringRegex = /(['`"])((?:[^\\]\\\1|.)*?)\1/g;
+
+function replaceStringsWithRequires(string: string) {
+  return string.replace(stringRegex, function (match, quote, url) {
+    if (url.charAt(0) !== '.') {
+      url = './' + url;
+    }
+    return "rawRequire('" + url + "')";
+  });
+}
+
+function angularTemplateTransform(source: string) {
+  const styleProperty = 'styles';
+  const templateProperty = 'template';
+  const transformedSource = source
+    .replace(templateUrlRegex, function (match, url) {
+      // replace: templateUrl: './path/to/template.html'
+      // with: template: require('./path/to/template.html')
+      // or: templateUrl: require('./path/to/template.html')
+      // if `keepUrl` query parameter is set to true.
+      return templateProperty + ':' + replaceStringsWithRequires(url);
+    })
+    .replace(stylesRegex, function (match, urls) {
+      // replace: stylesUrl: ['./foo.css', "./baz.css", "./index.component.css"]
+      // with: styles: [require('./foo.css'), require("./baz.css"), require("./index.component.css")]
+      // or: styleUrls: [require('./foo.css'), require("./baz.css"), require("./index.component.css")]
+      // if `keepUrl` query parameter is set to true.
+      return styleProperty + ':' + replaceStringsWithRequires(urls);
+    });
+
+  return transformedSource;
+}
+
 export async function createAsset(
   filePath: string,
   importer: string,
@@ -26,6 +61,7 @@ export async function createAsset(
   const dependencies: string[] = [];
   const resolvedFileExtension = getFileExtension(path.basename(filePath));
   const file = files[filePath];
+  const template = detectTemplate(files);
 
   if (['js', 'ts'].includes(resolvedFileExtension)) {
     const ast = babelParser.parse(file.content, {
@@ -39,13 +75,17 @@ export async function createAsset(
       }
     });
 
-    const code = Babel.transform(file.content, {
+    let code = Babel.transform(file.content, {
       presets: ['env', 'react'],
       plugins: [
         [Babel.availablePlugins['proposal-decorators'], { legacy: true }],
         Babel.availablePlugins['proposal-class-properties']
       ]
     }).code;
+
+    if (code && template === 'angular') {
+      code = angularTemplateTransform(code);
+    }
 
     return {
       code,
