@@ -94,7 +94,7 @@ export function findRemovedFiles(
 
 export function getPackageJSON(files: Files, filePath = '/') {
   const packageJSONPath = path.resolve(filePath, 'package.json');
-  const packageJSONStr = files[packageJSONPath].content || '{}';
+  const packageJSONStr = files[packageJSONPath]?.content || '{}';
 
   return JSON.parse(packageJSONStr);
 }
@@ -109,26 +109,44 @@ export function detectTemplate(files: Files): ProjectTemplate {
 }
 
 export function getProjectTemplateDefintion(
-  template: ProjectTemplate
+  files: Files
 ): ProjectTemplateDefintion {
+  const template = detectTemplate(files);
+
   switch (template) {
     case 'react': {
       return {
         htmlEntry: '/public/index.html',
-        entry: ['src/index.js']
+        entry: 'src/index.js'
       };
     }
     case 'angular': {
       return {
         htmlEntry: '/src/index.html',
-        entry: ['/src/main.ts', '/src/polyfill.ts']
+        entry: '/src/main.ts'
       };
     }
     default: {
       return {
         htmlEntry: '/index.html',
-        entry: ['/index.js']
+        entry: '/index.js'
       };
     }
   }
+}
+
+export function getHTMLParts(html: string) {
+  if (html.includes('<body>')) {
+    const bodyMatcher = /<body.*>([\s\S]*)<\/body>/m;
+    const headMatcher = /<head>([\s\S]*)<\/head>/m;
+
+    const headMatch = html.match(headMatcher);
+    const bodyMatch = html.match(bodyMatcher);
+    const head = headMatch && headMatch[1] ? headMatch[1] : '';
+    const body = bodyMatch && bodyMatch[1] ? bodyMatch[1] : html;
+
+    return { body, head };
+  }
+
+  return { head: '', body: html };
 }

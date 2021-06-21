@@ -7,7 +7,7 @@ export type Files = Record<
 
 export type ProjectTemplateDefintion = {
   htmlEntry: string;
-  entry: string[];
+  entry: string;
 };
 
 export type ProjectTemplate = 'react' | 'angular' | 'vanilla';

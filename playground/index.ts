@@ -17,7 +17,7 @@ const packageJSON = {
 };
 
 const files: Files = {
-  '/app/app.component.ts': {
+  '/src/app/app.component.ts': {
     content: `
       import { Component } from "@angular/core";
 
@@ -33,7 +33,7 @@ const files: Files = {
       }
     `
   },
-  '/app/app.module.ts': {
+  '/src/app/app.module.ts': {
     content: `
     import { BrowserModule } from "@angular/platform-browser";
     import { NgModule } from "@angular/core";
@@ -48,7 +48,7 @@ const files: Files = {
     export class AppModule {}
     `
   },
-  '/main.ts': {
+  '/src/main.ts': {
     content: `
     import "zone.js/dist/zone";
     import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
@@ -60,7 +60,7 @@ const files: Files = {
     
   `
   },
-  '/index.html': {
+  '/src/index.html': {
     content: `
     <!doctype html>
     <html lang="en">

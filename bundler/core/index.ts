@@ -1,6 +1,11 @@
 import BundlerWorker from 'worker-loader!./bundler.worker';
 import { resolveFile } from '@common/resolver';
-import { BundlerWorkerMessage, DepGraph, Files } from '@common/api';
+import {
+  BundlerWorkerMessage,
+  DepGraph,
+  Files,
+  ProjectTemplateDefintion
+} from '@common/api';
 import path from 'path';
 import {
   getFileExtension,
@@ -8,8 +13,11 @@ import {
   isExternalDep
 } from '@common/utils';
 import moduleCache from '../cache/module-cache';
-import packageCache from '../cache/package-cache';
-import { findRemovedFiles } from '../utils';
+import {
+  findRemovedFiles,
+  getHTMLParts,
+  getProjectTemplateDefintion
+} from '../utils';
 
 export interface BrowserPackConfig {
   files: Files;
@@ -19,10 +27,12 @@ export interface BrowserPackConfig {
 export default class Browserpack {
   private bundlerWorker: Worker;
   private depGraph: DepGraph;
+  private templateDefintion: ProjectTemplateDefintion;
 
   constructor(private config: BrowserPackConfig) {
     this.bundlerWorker = new BundlerWorker();
     this.depGraph = {};
+    this.templateDefintion = getProjectTemplateDefintion(config.files);
   }
 
   private sendBundlerWorkerMessage(message: BundlerWorkerMessage) {
@@ -204,7 +214,18 @@ export default class Browserpack {
   }
 
   run() {
-    this.runCode(this.config.entryPoint || '/index.js');
+    const htmlEntry = this.templateDefintion.htmlEntry;
+
+    if (this.config.files[htmlEntry]?.content) {
+      const { head, body } = getHTMLParts(
+        this.config.files[htmlEntry]?.content
+      );
+
+      document.head.innerHTML = head;
+      document.body.innerHTML = body;
+    }
+
+    this.runCode(this.config.entryPoint || this.templateDefintion.entry);
   }
 
   undoRun(filePath: string) {

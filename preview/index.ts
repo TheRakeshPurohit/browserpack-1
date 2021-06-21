@@ -10,7 +10,7 @@ listenForWindowMessage((evt) => {
     case 'BUNDLE': {
       const { files } = evt.data.payload;
 
-      bundler = new Bundler({ files, entryPoint: '/main.ts' });
+      bundler = new Bundler({ files });
 
       bundler
         .bundle()

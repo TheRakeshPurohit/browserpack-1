@@ -3,10 +3,7 @@ import { createAsset, findRemovedFiles } from '../utils';
 import { resolveFile } from '@common/resolver';
 import assetCache from '../cache/asset-cache';
 
-export async function generateDepGraph(
-  files: Files,
-  entryPoint: string = '/index.js'
-) {
+export async function generateDepGraph(files: Files, entryPoint: string) {
   const queue = [{ importer: entryPoint, filePath: entryPoint }];
   const depGraph: DepGraph = {};
 
@@ -35,7 +32,7 @@ export async function generateDepGraph(
     depGraph[resolvedFilePath] = asset;
     const dependencies = asset.dependencies.map((dependency) => ({
       filePath: dependency,
-      importer: filePath
+      importer: resolvedFilePath
     }));
 
     queue.push(...dependencies);
