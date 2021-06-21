@@ -1,0 +1,25 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+#root {
+  height: 100vh;
+  width: 100%;
+}
+
+.preview {
+  border: 1px solid red;
+  width: 600px;
+  height: 100vh;
+}
+
+.file-tree {
+  height: 100vh;
+  width: 400px;
+  border: 1px solid red;
+}
+
+.container {
+  display: flex;
+}

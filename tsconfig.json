@@ -15,7 +15,8 @@
       "@client": ["./client/index.ts"]
     },
     "lib": ["WebWorker", "DOM"],
-    "typeRoots": ["./node_modules/@types", "./typings"]
+    "typeRoots": ["./node_modules/@types", "./typings"],
+    "jsx": "react"
   },
   "exclude": ["app", "packager"]
 }

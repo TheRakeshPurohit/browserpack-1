@@ -1,6 +1,9 @@
 import Browserpack from '@client';
 import angular from './templates/angular';
 import react from './templates/react';
+import App from './app';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 const browserpack = new Browserpack('#preview', react);
 
@@ -11,3 +14,5 @@ browserpack.onReady(async () => {
 
   browserpack.run();
 });
+
+ReactDOM.render(<App />, document.getElementById('root'));

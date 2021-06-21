@@ -3,6 +3,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const dotenv = require('dotenv').config();
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 const htmlTemplatePath = path.resolve(__dirname, 'index.html');
@@ -11,7 +12,7 @@ const devServerPort = process.env.PORT || 3000;
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
-  entry: './playground/index.ts',
+  entry: './playground/index.tsx',
   context: path.resolve(__dirname, '..'),
   devServer: {
     contentBase: distDir,
@@ -26,6 +27,10 @@ module.exports = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
   },
@@ -49,6 +54,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(dotenv.parsed)
-    })
+    }),
+    new MiniCssExtractPlugin()
   ]
 };
