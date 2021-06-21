@@ -9,6 +9,7 @@ const packageJSON = {
     '@angular/platform-browser': '^11.2.0',
     '@angular/platform-browser-dynamic': '^11.2.0',
     'core-js': '3.8.3',
+    lodash: '4.17.21',
     tslib: '2.1.0',
     'zone.js': '0.11.4',
     rxjs: '6.6.3'
@@ -34,6 +35,7 @@ const files: Files = {
     import { BrowserModule } from "@angular/platform-browser";
     import { NgModule } from "@angular/core";
     import { AppComponent } from "./app.component";
+    import lodash from 'lodash';
 
     
     @NgModule({
@@ -47,7 +49,8 @@ const files: Files = {
   },
   '/main.ts': {
     content: `
-    import "zone.js";
+    import "zone.js/dist/zone";
+    import "core-js/proposals/reflect-metadata";
     import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
     import { AppModule } from "./app/app.module";
 

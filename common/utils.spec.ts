@@ -1,8 +1,4 @@
-import {
-  findRootPathOfPackage,
-  getFileExtension,
-  isExternalDep
-} from './utils';
+import { getFileExtension, isExternalDep } from './utils';
 
 describe('common utils', () => {
   describe('getFileExtension()', () => {
@@ -26,24 +22,6 @@ describe('common utils', () => {
       expect(isExternalDep('react')).toBeTruthy();
       expect(isExternalDep('react/index.js')).toBeTruthy();
       expect(isExternalDep('@chakra-ui/core')).toBeTruthy();
-    });
-  });
-
-  describe('findRootPathOfPackage()', () => {
-    it('should find the root path of package', () => {
-      expect(
-        findRootPathOfPackage('/node_modules/react/dist/index.js')
-      ).toEqual('/node_modules/react');
-    });
-
-    it('should find the root path of scoped package', () => {
-      expect(
-        findRootPathOfPackage('/node_modules/@chakra-ui/core/dist/index.js')
-      ).toEqual('/node_modules/@chakra-ui/core');
-    });
-
-    it('should return / when it is a direact dependency', () => {
-      expect(findRootPathOfPackage('/hello.js')).toEqual('');
     });
   });
 });

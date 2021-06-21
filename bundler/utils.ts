@@ -3,13 +3,20 @@ import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';
 import path from 'path';
-import { getFileExtension } from '@common/utils';
+import { getFileExtension, isExternalDep } from '@common/utils';
 
-export function createAsset(
+export async function createAsset(
   filePath: string,
   importer: string,
   files: Files
-): Asset | null {
+): Promise<Asset | null> {
+  if (isExternalDep(filePath)) {
+    return {
+      code: '',
+      dependencies: []
+    };
+  }
+
   const dependencies: string[] = [];
   const resolvedFileExtension = getFileExtension(path.basename(filePath));
   const file = files[filePath];

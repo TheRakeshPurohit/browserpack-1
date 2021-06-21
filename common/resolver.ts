@@ -1,10 +1,5 @@
 import { Files } from '@common/api';
-import {
-  findRootPathOfPackage,
-  getFileExtension,
-  getPackageNameFromPath,
-  isExternalDep
-} from '@common/utils';
+import { isExternalDep } from '@common/utils';
 import path from 'path';
 
 const extensions = ['js', 'ts'];
@@ -14,24 +9,13 @@ export function resolveFile(
   depPath: string,
   importerPath: string = '/'
 ) {
-  const absoluteFilePath = (() => {
-    if (isExternalDep(depPath)) {
-      const packageRootPath = findRootPathOfPackage(importerPath);
-      const depPackageName = getPackageNameFromPath(depPath);
-      const packageJSON = JSON.parse(
-        files[`${packageRootPath}/package.json`]?.content || '{}'
-      );
-      const packageDependencies = packageJSON.dependencies || {};
+  if (isExternalDep(depPath)) return depPath;
 
-      if (packageDependencies[depPackageName]) {
-        return `${packageRootPath}/node_modules/${depPath}`;
-      } else {
-        return `/node_modules/${depPath}`;
-      }
-    } else {
-      return path.resolve('/', path.dirname(importerPath), depPath);
-    }
-  })();
+  const absoluteFilePath = path.resolve(
+    '/',
+    path.dirname(importerPath),
+    depPath
+  );
 
   if (files[absoluteFilePath]) return absoluteFilePath;
 

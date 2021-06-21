@@ -35,25 +35,6 @@ export function resolveDepPath(
   return resolveFile(files, depAbsolutePath);
 }
 
-export function findRootPathOfPackage(filePath: string) {
-  const filePathParts = filePath.split('/');
-  let i;
-
-  for (i = filePathParts.length; i >= 0; i--) {
-    if (filePathParts[i] === 'node_modules') {
-      break;
-    }
-  }
-
-  // it is a scope package so we need another part in the path
-  // @chakra-ui/core
-  if (filePathParts[i + 1].startsWith('@')) {
-    i++;
-  }
-
-  return filePathParts.slice(0, i + 2).join('/');
-}
-
 export function getPackageNameFromPath(filePath: string) {
   const fileParts = filePath.split('/');
 

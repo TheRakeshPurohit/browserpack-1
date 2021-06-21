@@ -64,31 +64,20 @@ describe('resolver', () => {
 
     it('should resolve npm packages', () => {
       const files: Files = {
-        '/node_modules/react/index.js': {
-          content: `module.exports = {}`
+        '/package.json': {
+          content: `
+            {
+              "dependencies": {
+                "react": "0.0.1"
+              }
+            }
+          `
         }
       };
 
-      expect(resolveFile(files, 'react', '/hello.js')).toEqual(
-        '/node_modules/react/index.js'
+      expect(resolveFile(files, 'react/index.js', '/hello.js')).toEqual(
+        'react/index.js'
       );
-    });
-
-    it('should resolve npm packages', () => {
-      const files: Files = {
-        '/node_modules/react/node_modules/object-assign/index.js': {
-          content: `module.exports = {}`
-        },
-        '/node_modules/react/package.json': {
-          content: `{
-            "dependencies": { "object-assign": "latest" }
-          }`
-        }
-      };
-
-      expect(
-        resolveFile(files, 'object-assign', '/node_modules/react/index.js')
-      ).toEqual('/node_modules/react/node_modules/object-assign/index.js');
     });
   });
 });

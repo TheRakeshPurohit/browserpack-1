@@ -2,7 +2,11 @@ import BundlerWorker from 'worker-loader!./bundler.worker';
 import { resolveFile } from '@common/resolver';
 import { BundlerWorkerMessage, DepGraph, Files } from '@common/api';
 import path from 'path';
-import { getFileExtension } from '@common/utils';
+import {
+  getFileExtension,
+  getPackageNameFromPath,
+  isExternalDep
+} from '@common/utils';
 import moduleCache from '../cache/module-cache';
 import packageCache from '../cache/package-cache';
 import { findRemovedFiles } from '../utils';
@@ -74,39 +78,20 @@ export default class Browserpack {
   }
 
   private async installPackages() {
-    const packageJSONContent =
-      this.config.files['/package.json']?.content || '{}';
+    for (const dep in this.depGraph) {
+      if (isExternalDep(dep)) {
+        const depPackageName = getPackageNameFromPath(dep);
+        const packageJSON = JSON.parse(
+          this.config.files[`/package.json`]?.content || '{}'
+        );
+        const packageDependencies = packageJSON.dependencies || {};
+        const packageVersion = packageDependencies[depPackageName];
+        const depPath = dep.substr(depPackageName.length + 1);
+        const cdnPath = `https://cdn.skypack.dev/${depPackageName}@${packageVersion}/${depPath}`;
+        const module = await import(/* webpackIgnore: true */ cdnPath);
 
-    try {
-      const packageJSON = JSON.parse(packageJSONContent);
-      const dependencies = packageJSON.dependencies || {};
-
-      for (const packageName in dependencies) {
-        const packageVersion = dependencies[packageName];
-        const cacheKey = `${packageName}:${packageVersion}`;
-        let cachedPackage = packageCache.get(cacheKey);
-
-        if (!cachedPackage) {
-          cachedPackage = await this.installPackage(
-            packageName,
-            packageVersion
-          );
-
-          packageCache.set(cacheKey, cachedPackage);
-        }
-
-        if (cachedPackage) {
-          this.depGraph = { ...this.depGraph, ...cachedPackage };
-        }
-
-        for (const filePath in cachedPackage) {
-          this.config.files[filePath] = {
-            content: cachedPackage[filePath].code || ''
-          };
-        }
+        this.depGraph[dep].code = module;
       }
-    } catch {
-      throw new Error(`Invalid json file at /package.json`);
     }
   }
 
@@ -149,6 +134,8 @@ export default class Browserpack {
     await this.generateDepGraph(invalidateFiles);
     await this.installPackages();
 
+    console.log(this.depGraph);
+
     return this.depGraph;
   }
 
@@ -176,6 +163,10 @@ export default class Browserpack {
         throw new Error(
           `Cannot find module '${relativePath}' from '${filePath}'`
         );
+      }
+
+      if (isExternalDep(resolvedFilePath)) {
+        return this.depGraph[resolvedFilePath].code;
       }
 
       return this.runCode(resolvedFilePath);
