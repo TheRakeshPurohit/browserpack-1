@@ -1,20 +1,28 @@
 import { Files } from '@common/api';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FolderTree from 'react-folder-tree';
 import 'react-folder-tree/dist/style.css';
 import './style.css';
 import react from './templates/react';
+import { Controlled as CodeMirror } from 'react-codemirror2';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/javascript/javascript';
+import { getProjectTemplateDefintion } from '@common/utils';
+import angular from './templates/angular';
+import Browserpack from '@client';
+
+type TreeData = {
+  name: string;
+  isOpen: boolean;
+  children?: TreeData[];
+  fsPath: string;
+  isDir?: boolean;
+};
 
 function generateFileTree(files: Files) {
-  type TreeData = {
-    name: string;
-    isOpen: boolean;
-    children?: TreeData[];
-    fsPath: string;
-    isDir?: boolean;
-  };
   let tree: TreeData = {
-    name: 'react',
+    name: 'project',
     isOpen: true,
     children: [],
     fsPath: '/'
@@ -53,17 +61,67 @@ function generateFileTree(files: Files) {
 }
 
 export default function App() {
-  return (
-    <div className="file-tree">
-      <FolderTree
-        onNameClick={({ defaultOnClick, nodeData }: any) => {
-          defaultOnClick();
+  const [selectedTemplate, setSelectedTemplate] = useState(angular);
+  const [selectedFile, setSelectedFile] = useState<string>();
+  const [code, setCode] = useState<any>();
+  const [fileTree, setFileTree] = useState<TreeData>({
+    name: '/',
+    children: [],
+    isOpen: false,
+    fsPath: '/'
+  });
+  const browserpack = useRef<Browserpack>();
 
-          console.log(nodeData);
-        }}
-        data={generateFileTree(react)}
-        showCheckbox={false}
-      />
+  function initBrowserPack() {}
+
+  useEffect(() => {
+    const templateDefinition = getProjectTemplateDefintion(selectedTemplate);
+
+    setSelectedFile(templateDefinition.entry);
+    setFileTree(generateFileTree(selectedTemplate));
+
+    browserpack.current = new Browserpack('#preview', selectedTemplate);
+    browserpack.current.init();
+
+    browserpack.current.onReady(async () => {
+      await browserpack.current?.bundle();
+
+      browserpack.current?.run();
+    });
+  }, [selectedTemplate]);
+
+  useEffect(() => {
+    if (selectedFile) {
+      setCode(selectedTemplate[selectedFile].content);
+    }
+  }, [selectedFile]);
+
+  return (
+    <div className="workspace">
+      <div className="file-tree">
+        <FolderTree
+          onNameClick={({ nodeData }: any) => {
+            setSelectedFile(nodeData.fsPath);
+          }}
+          data={fileTree}
+          showCheckbox={false}
+        />
+      </div>
+      <div className="editor">
+        <CodeMirror
+          className="editor"
+          value={code}
+          onBeforeChange={(editor, data, value) => {
+            setCode(value);
+          }}
+          options={{
+            mode: 'javascript',
+            theme: 'material',
+            lineNumbers: true
+          }}
+          onChange={(editor, data, value) => {}}
+        />
+      </div>
     </div>
   );
 }

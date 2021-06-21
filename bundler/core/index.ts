@@ -10,14 +10,11 @@ import path from 'path';
 import {
   getFileExtension,
   getPackageNameFromPath,
+  getProjectTemplateDefintion,
   isExternalDep
 } from '@common/utils';
 import moduleCache from '../cache/module-cache';
-import {
-  findRemovedFiles,
-  getHTMLParts,
-  getProjectTemplateDefintion
-} from '../utils';
+import { findRemovedFiles, getHTMLParts } from '../utils';
 
 export interface BrowserPackConfig {
   files: Files;

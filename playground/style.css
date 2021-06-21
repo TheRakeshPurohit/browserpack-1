@@ -9,7 +9,6 @@ body {
 }
 
 .preview {
-  border: 1px solid red;
   width: 600px;
   height: 100vh;
 }
@@ -17,9 +16,22 @@ body {
 .file-tree {
   height: 100vh;
   width: 400px;
-  border: 1px solid red;
 }
 
 .container {
   display: flex;
+}
+
+.workspace {
+  display: flex;
+  height: 100vh;
+}
+
+.editor {
+  width: 100%;
+  height: 100vh;
+}
+
+.CodeMirror {
+  height: 100vh !important;
 }

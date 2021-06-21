@@ -1,15 +1,9 @@
-import {
-  Asset,
-  DepGraph,
-  Files,
-  ProjectTemplate,
-  ProjectTemplateDefintion
-} from '@common/api';
+import { Asset, DepGraph, Files } from '@common/api';
 import * as babelParser from '@babel/parser';
 import babelTraverse from '@babel/traverse';
 import * as Babel from '@babel/standalone';
 import path from 'path';
-import { getFileExtension, isExternalDep } from '@common/utils';
+import { detectTemplate, getFileExtension, isExternalDep } from '@common/utils';
 
 const templateUrlRegex = /templateUrl\s*:(\s*['"`](.*?)['"`]\s*([,}]))/gm;
 const stylesRegex = /styleUrls *:(\s*\[[^\]]*?\])/g;
@@ -130,49 +124,6 @@ export function findRemovedFiles(
   }
 
   return removedFiles;
-}
-
-export function getPackageJSON(files: Files, filePath = '/') {
-  const packageJSONPath = path.resolve(filePath, 'package.json');
-  const packageJSONStr = files[packageJSONPath]?.content || '{}';
-
-  return JSON.parse(packageJSONStr);
-}
-
-export function detectTemplate(files: Files): ProjectTemplate {
-  const packageJSON = getPackageJSON(files);
-  const dependencies = packageJSON.dependencies || {};
-
-  if (dependencies['react']) return 'react';
-  else if (dependencies['@angular/core']) return 'angular';
-  else return 'vanilla';
-}
-
-export function getProjectTemplateDefintion(
-  files: Files
-): ProjectTemplateDefintion {
-  const template = detectTemplate(files);
-
-  switch (template) {
-    case 'react': {
-      return {
-        htmlEntry: '/public/index.html',
-        entry: '/src/index.js'
-      };
-    }
-    case 'angular': {
-      return {
-        htmlEntry: '/src/index.html',
-        entry: '/src/main.ts'
-      };
-    }
-    default: {
-      return {
-        htmlEntry: '/index.html',
-        entry: '/index.js'
-      };
-    }
-  }
 }
 
 export function getHTMLParts(html: string) {

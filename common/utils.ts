@@ -1,5 +1,5 @@
 import path from 'path';
-import { Files } from './api';
+import { Files, ProjectTemplate, ProjectTemplateDefintion } from './api';
 import { resolveFile } from './resolver';
 import { ClientMessage } from '@common/api';
 
@@ -62,4 +62,47 @@ export function listenForWindowMessage(
   window.addEventListener('message', cb);
 
   return () => window.removeEventListener('message', cb);
+}
+
+export function detectTemplate(files: Files): ProjectTemplate {
+  const packageJSON = getPackageJSON(files);
+  const dependencies = packageJSON.dependencies || {};
+
+  if (dependencies['react']) return 'react';
+  else if (dependencies['@angular/core']) return 'angular';
+  else return 'vanilla';
+}
+
+export function getPackageJSON(files: Files, filePath = '/') {
+  const packageJSONPath = path.resolve(filePath, 'package.json');
+  const packageJSONStr = files[packageJSONPath]?.content || '{}';
+
+  return JSON.parse(packageJSONStr);
+}
+
+export function getProjectTemplateDefintion(
+  files: Files
+): ProjectTemplateDefintion {
+  const template = detectTemplate(files);
+
+  switch (template) {
+    case 'react': {
+      return {
+        htmlEntry: '/public/index.html',
+        entry: '/src/index.js'
+      };
+    }
+    case 'angular': {
+      return {
+        htmlEntry: '/src/index.html',
+        entry: '/src/main.ts'
+      };
+    }
+    default: {
+      return {
+        htmlEntry: '/index.html',
+        entry: '/index.js'
+      };
+    }
+  }
 }

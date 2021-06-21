@@ -4,7 +4,7 @@ import path from 'path';
 import { getFileExtension } from '@common/utils';
 import * as Babel from '@babel/standalone';
 import assetCache from '../cache/asset-cache';
-import { getProjectTemplateDefintion } from '../utils';
+import { getProjectTemplateDefintion } from '@common/utils';
 
 function sendMesssage(message: BundlerWorkerMessage) {
   self.postMessage(message);

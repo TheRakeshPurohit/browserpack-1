@@ -14,18 +14,16 @@ const packageJSON = {
 
 const files: Files = {
   '/src/app/app.component.ts': {
-    content: `
-      import { Component } from "@angular/core";
+    content: `import { Component } from "@angular/core";
 
-      @Component({
-        selector: "app-root",
-        templateUrl: "./app.component.html",
-        styleUrls: ['./app.component.css']
-      })
-      export class AppComponent {
-        title = "Hello from Angular!";
-      }
-    `
+@Component({
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = "Hello from Angular!";
+}`
   },
   '/src/app/app.component.html': {
     content: `<h1>{{title}}</h1>`
@@ -34,51 +32,45 @@ const files: Files = {
     content: `h1 { color: red; }`
   },
   '/src/app/app.module.ts': {
-    content: `
-    import { BrowserModule } from "@angular/platform-browser";
-    import { NgModule } from "@angular/core";
-    import { AppComponent } from "./app.component";
-    
-    @NgModule({
-      declarations: [AppComponent],
-      imports: [BrowserModule],
-      providers: [],
-      bootstrap: [AppComponent]
-    })
-    export class AppModule {}
-    `
+    content: `import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { AppComponent } from "./app.component";
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}`
   },
   '/src/main.ts': {
-    content: `
-    import "zone.js/dist/zone";
-    import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
-    import { AppModule } from "./app/app.module";
+    content: `import "zone.js/dist/zone";
+import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import { AppModule } from "./app/app.module";
 
-    platformBrowserDynamic()
-      .bootstrapModule(AppModule)
-      .catch(err => console.log(err));
-  `
+platformBrowserDynamic()
+  .bootstrapModule(AppModule)
+  .catch(err => console.log(err));`
   },
   '/src/index.html': {
-    content: `
-    <!doctype html>
-    <html lang="en">
-    
-    <head>
-      <meta charset="utf-8">
-      <title>Angular</title>
-      <base href="/">
-    </head>
-    
-    <body>
-      <app-root></app-root>
-    </body>
-    
-    </html>
-  `
+    content: `<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Angular</title>
+  <base href="/">
+</head>
+
+<body>
+  <app-root></app-root>
+</body>
+
+</html>`
   },
   '/package.json': {
-    content: JSON.stringify(packageJSON)
+    content: JSON.stringify(packageJSON, null, 2)
   }
 };
 
