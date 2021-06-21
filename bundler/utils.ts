@@ -157,7 +157,7 @@ export function getProjectTemplateDefintion(
     case 'react': {
       return {
         htmlEntry: '/public/index.html',
-        entry: 'src/index.js'
+        entry: '/src/index.js'
       };
     }
     case 'angular': {
