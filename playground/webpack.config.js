@@ -1,7 +1,6 @@
 const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const dotenv = require('dotenv').config();
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -53,7 +52,7 @@ module.exports = {
       template: htmlTemplatePath
     }),
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(dotenv.parsed)
+      'process.env': JSON.stringify({ NODE_ENV: process.env.NODE_ENV })
     }),
     new MiniCssExtractPlugin()
   ]

@@ -1,7 +1,6 @@
 const path = require('path');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const dotenv = require('dotenv').config();
 const webpack = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -58,7 +57,7 @@ module.exports = {
       publicPath: !isDev ? '/preview' : '/'
     }),
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify(dotenv.parsed)
+      'process.env': JSON.stringify({ NODE_ENV: process.env.NODE_ENV })
     })
   ]
 };
