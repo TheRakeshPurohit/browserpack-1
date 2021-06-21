@@ -53,6 +53,11 @@ class Browserpack {
     }
   }
 
+  cleanup() {
+    this.onReadyHandler = () => {};
+    this.iframeElement?.remove();
+  }
+
   bundle() {
     if (this.isBundlerReady) {
       return new Promise((resolve, reject) => {

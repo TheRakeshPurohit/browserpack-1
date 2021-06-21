@@ -13,6 +13,11 @@ import angular from './templates/angular';
 import Browserpack from '@client';
 import { debounce } from 'lodash-es';
 
+const templates: any = {
+  react: react,
+  angular: angular
+};
+
 type TreeData = {
   name: string;
   isOpen: boolean;
@@ -99,6 +104,8 @@ export default function App() {
 
       browserpack.current?.run();
     });
+
+    return () => browserpack.current?.cleanup();
   }, [selectedTemplate]);
 
   useEffect(() => {
@@ -110,6 +117,13 @@ export default function App() {
   return (
     <div className="workspace">
       <div className="file-tree">
+        <select
+          onChange={(evt) => setSelectedTemplate(templates[evt.target.value])}
+          className="project-selector"
+        >
+          <option value="angular">Angular</option>
+          <option value="react">React</option>
+        </select>
         <FolderTree
           onNameClick={({ nodeData }: any) => {
             setSelectedFile(nodeData.fsPath);
