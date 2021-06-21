@@ -23,10 +23,15 @@ const files: Files = {
 })
 export class AppComponent {
   title = "Hello from Angular!";
+  
+  changeTitle() {
+    this.title = "Changed the title";
+  }
 }`
   },
   '/src/app/app.component.html': {
-    content: `<h1>{{title}}</h1>`
+    content: `<h1>{{title}}</h1>
+<button (click)="changeTitle()">Click to change the title</button>`
   },
   '/src/app/app.component.css': {
     content: `h1 { color: red; }`
