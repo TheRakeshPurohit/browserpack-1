@@ -11,6 +11,7 @@ import 'codemirror/mode/javascript/javascript';
 import { getProjectTemplateDefintion } from '@common/utils';
 import angular from './templates/angular';
 import Browserpack from '@client';
+import { debounce } from 'lodash-es';
 
 type TreeData = {
   name: string;
@@ -52,17 +53,29 @@ function generateFileTree(files: Files) {
         }
 
         curRoot.children?.push(dir);
-        curRoot = dir;
       }
+
+      curRoot = dir;
     }
   }
 
   return tree;
 }
 
+const sendPatch = debounce(
+  (browserpack: Browserpack, selectedFile: string, value) => {
+    browserpack.patch({
+      [selectedFile]: {
+        content: value
+      }
+    });
+  },
+  200
+);
+
 export default function App() {
   const [selectedTemplate, setSelectedTemplate] = useState(angular);
-  const [selectedFile, setSelectedFile] = useState<string>();
+  const [selectedFile, setSelectedFile] = useState<string>('');
   const [code, setCode] = useState<any>();
   const [fileTree, setFileTree] = useState<TreeData>({
     name: '/',
@@ -71,8 +84,6 @@ export default function App() {
     fsPath: '/'
   });
   const browserpack = useRef<Browserpack>();
-
-  function initBrowserPack() {}
 
   useEffect(() => {
     const templateDefinition = getProjectTemplateDefintion(selectedTemplate);
@@ -113,6 +124,14 @@ export default function App() {
           value={code}
           onBeforeChange={(editor, data, value) => {
             setCode(value);
+
+            selectedTemplate[selectedFile] = {
+              content: value
+            };
+
+            if (browserpack.current) {
+              sendPatch(browserpack.current, selectedFile, value);
+            }
           }}
           options={{
             mode: 'javascript',

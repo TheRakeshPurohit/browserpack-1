@@ -34,6 +34,7 @@ ReactDOM.render(<App />, document.getElementById('root'));`
   },
   '/src/app.js': {
     content: `import React from 'react';
+import './app.css';
 
 export default function App() {
   return <h1>Hello from React</h1>;

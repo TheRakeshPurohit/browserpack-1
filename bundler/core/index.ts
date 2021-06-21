@@ -258,14 +258,15 @@ export default class Browserpack {
     this.config.files = { ...this.config.files, ...files };
 
     const prevDepGraph = this.depGraph;
-    const filesToInvalidate = [];
+    // const filesToInvalidate = [];
 
-    for (const file in files) {
-      filesToInvalidate.push(file, ...this.findDependents(file));
-    }
+    // for (const file in files) {
+    //   filesToInvalidate.push(file, ...this.findDependents(file));
+    // }
 
     // now we will transpile and run only affected files and files that depend on the updated files
-    await this.bundle([...filesToInvalidate]);
+    // await this.bundle([...filesToInvalidate]);
+    await this.bundle();
 
     const removedFiles = this.findRemovedFiles(prevDepGraph);
 
