@@ -4,12 +4,10 @@
   "description": "Browser based bundler",
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build-app": "lerna run build --scope=@browserpack/app",
     "dev-preview": "cross-env NODE_ENV=development webpack serve --progress --config preview/webpack.config.js",
     "playground": "cross-env NODE_ENV=development webpack serve --progress --config playground/webpack.config.js",
-    "dev-packager": "cross-env NODE_ENV=development nodemon --watch packager -e ts,js,json --exec ts-node --project tsconfig.packager.json --require tsconfig-paths/register --files packager/index.ts",
-    "start-packager": "cross-env NODE_ENV=production ts-node --project tsconfig.packager.json --require tsconfig-paths/register --files packager/index.ts",
-    "build-preview": "webpack --progress --config preview/webpack.config.js",
+    "build-playground": "cross-env NODE_ENV=production webpack --progress --config playground/webpack.config.js",
+    "build-preview": "cross-env NODE_ENV=production webpack --progress --config preview/webpack.config.js",
     "build-preview-dev": "cross-env NODE_ENV=development webpack --progress --config preview/webpack.config.js",
     "test": "jest --watch",
     "test:ci": "jest"

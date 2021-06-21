@@ -96,7 +96,13 @@ export default function App() {
     setSelectedFile(templateDefinition.entry);
     setFileTree(generateFileTree(selectedTemplate));
 
-    browserpack.current = new Browserpack('#preview', selectedTemplate);
+    browserpack.current = new Browserpack(
+      '#preview',
+      selectedTemplate,
+      process.env.NODE_ENV === 'production'
+        ? '/preview'
+        : 'http://localhost:3001'
+    );
     browserpack.current.init();
 
     browserpack.current.onReady(async () => {

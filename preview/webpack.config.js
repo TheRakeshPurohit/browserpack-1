@@ -6,7 +6,9 @@ const webpack = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development';
 const htmlTemplatePath = path.resolve(__dirname, 'index.html');
-const distDir = path.join(__dirname, 'dist');
+const distDir = !isDev
+  ? path.resolve(__dirname, '..', 'playground', 'dist', 'preview')
+  : path.resolve(__dirname, 'dist');
 const devServerPort = process.env.PORT || 3001;
 const rootDir = path.resolve(__dirname, '..');
 
@@ -52,7 +54,8 @@ module.exports = {
   plugins: [
     new NodePolyfillPlugin(),
     new HtmlWebpackPlugin({
-      template: htmlTemplatePath
+      template: htmlTemplatePath,
+      publicPath: !isDev ? '/preview' : '/'
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(dotenv.parsed)
