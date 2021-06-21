@@ -134,8 +134,6 @@ export default class Browserpack {
     await this.generateDepGraph(invalidateFiles);
     await this.installPackages();
 
-    console.log(this.depGraph);
-
     return this.depGraph;
   }
 

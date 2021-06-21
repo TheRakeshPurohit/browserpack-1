@@ -23,7 +23,10 @@ const files: Files = {
 
       @Component({
         selector: "app-root",
-        template: "<h1>Hello {{title}}</h1>"
+        template: "<h1>Hello {{title}}</h1>",
+        styles: [
+          "h1 { color: red; }"
+        ]
       })
       export class AppComponent {
         title = "Browserpack";
@@ -35,8 +38,6 @@ const files: Files = {
     import { BrowserModule } from "@angular/platform-browser";
     import { NgModule } from "@angular/core";
     import { AppComponent } from "./app.component";
-    import lodash from 'lodash';
-
     
     @NgModule({
       declarations: [AppComponent],
@@ -50,7 +51,6 @@ const files: Files = {
   '/main.ts': {
     content: `
     import "zone.js/dist/zone";
-    import "core-js/proposals/reflect-metadata";
     import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
     import { AppModule } from "./app/app.module";
 
