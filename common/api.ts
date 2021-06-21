@@ -5,6 +5,13 @@ export type Files = Record<
   }
 >;
 
+export type ProjectTemplateDefintion = {
+  htmlEntry: string;
+  entry: string[];
+};
+
+export type ProjectTemplate = 'react' | 'angular' | 'vanilla';
+
 export type Asset = {
   code?: string | null;
   dependencies: string[];
