@@ -5,6 +5,72 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Browserpack Preview</title>
+    <style>
+      .loader,
+      .loader:after {
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+      }
+      .loader {
+        font-size: 10px;
+        position: relative;
+        border-top: 0.5em solid rgba(255, 255, 255, 0.2);
+        border-right: 0.5em solid rgba(255, 255, 255, 0.2);
+        border-bottom: 0.5em solid rgba(255, 255, 255, 0.2);
+        border-left: 0.5em solid #ffffff;
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-animation: load8 1.1s infinite linear;
+        animation: load8 1.1s infinite linear;
+      }
+      @-webkit-keyframes load8 {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes load8 {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      body {
+        padding: 0;
+        margin: 0;
+      }
+
+      .container {
+        height: 100vh;
+        width: 100%;
+        background: #000;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      #event {
+        color: #fff;
+        margin-top: 10px;
+      }
+    </style>
   </head>
-  <body></body>
+  <body>
+    <div class="container">
+      <div class="loader"></div>
+      <div id="event">Please wait...</div>
+    </div>
+  </body>
 </html>

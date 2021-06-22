@@ -12,6 +12,16 @@ listenForWindowMessage((evt) => {
 
       bundler = new Bundler({ files });
 
+      bundler.listen((event) => {
+        const eventElem = document.getElementById('event');
+
+        if (eventElem) {
+          eventElem.innerText = event;
+        }
+
+        sendMessageFromPreview({ type: 'EVENT', payload: { event } });
+      });
+
       bundler
         .bundle()
         .then(() => {

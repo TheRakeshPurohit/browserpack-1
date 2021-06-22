@@ -75,6 +75,12 @@ export type ClientMessage =
       };
     }
   | {
+      type: 'EVENT';
+      payload: {
+        event: string;
+      };
+    }
+  | {
       type: 'ERR';
       payload: {
         err: Error;

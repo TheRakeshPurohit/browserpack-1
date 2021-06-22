@@ -25,11 +25,13 @@ export default class Browserpack {
   private bundlerWorker: Worker;
   private depGraph: DepGraph;
   private templateDefintion: ProjectTemplateDefintion;
+  private eventListener: (event: string) => void;
 
   constructor(private config: BrowserPackConfig) {
     this.bundlerWorker = new BundlerWorker();
     this.depGraph = {};
     this.templateDefintion = getProjectTemplateDefintion(config.files);
+    this.eventListener = () => {};
   }
 
   private sendBundlerWorkerMessage(message: BundlerWorkerMessage) {
@@ -69,25 +71,17 @@ export default class Browserpack {
     return dependents;
   }
 
-  private async installPackage(
-    packageName: string,
-    version: string
-  ): Promise<DepGraph> {
-    const packagerResponse = await fetch(
-      `${process.env.PACKAGER_URL}/pack/${packageName}/${version}`
-    );
-
-    if (packagerResponse.ok) {
-      return (await packagerResponse.json()).assets;
-    } else {
-      throw new Error(`Failed to install package ${packageName}@${version}`);
-    }
+  private sendEvent(event: string) {
+    this.eventListener(event);
   }
 
   private async installPackages() {
     for (const dep in this.depGraph) {
       if (isExternalDep(dep)) {
         const depPackageName = getPackageNameFromPath(dep);
+
+        this.sendEvent(`Installing ${depPackageName}`);
+
         const packageJSON = JSON.parse(
           this.config.files[`/package.json`]?.content || '{}'
         );
@@ -110,6 +104,8 @@ export default class Browserpack {
         moduleCache.remove(file);
       }
     }
+
+    this.sendEvent('Transpiling files');
 
     return new Promise((resolve, reject) => {
       const workerListener = (evt: MessageEvent<BundlerWorkerMessage>) => {
@@ -135,6 +131,10 @@ export default class Browserpack {
         }
       });
     });
+  }
+
+  listen(eventListener: (event: string) => void) {
+    this.eventListener = eventListener;
   }
 
   async bundle(invalidateFiles: string[] = []): Promise<DepGraph> {

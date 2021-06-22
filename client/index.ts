@@ -6,6 +6,7 @@ class Browserpack {
   private isBundlerReady: boolean;
   private iframeElement: HTMLIFrameElement | null;
   private isBundleReady: boolean;
+  private eventListener: (event: string) => void;
 
   constructor(
     private iframeContainerId: string,
@@ -13,6 +14,7 @@ class Browserpack {
     private previewURL = 'http://localhost:3001'
   ) {
     this.onReadyHandler = () => {};
+    this.eventListener = () => {};
     this.isBundlerReady = false;
     this.isBundleReady = false;
     this.iframeElement = null;
@@ -41,6 +43,8 @@ class Browserpack {
       if (evt.data.type === 'BUNDLER_READY') {
         this.isBundlerReady = true;
         this.onReadyHandler();
+      } else if (evt.data.type === 'EVENT') {
+        this.eventListener(evt.data.payload.event);
       }
     });
   }
@@ -51,6 +55,10 @@ class Browserpack {
     if (this.isBundlerReady) {
       this.onReadyHandler();
     }
+  }
+
+  listen(eventListenr: (event: string) => void) {
+    this.eventListener = eventListenr;
   }
 
   cleanup() {
